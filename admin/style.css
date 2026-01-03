@@ -1,0 +1,129 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Cairo', sans-serif;
+  background: linear-gradient(135deg, #74a9ea, #8aadde);
+  margin: 0;
+  padding: 0;
+  direction: rtl;
+  color: #0e0e0e;
+}
+
+.container {
+  width: 92%;
+  max-width: 1100px;
+  margin: 50px auto;
+}
+
+.center {
+  text-align: center;
+}
+
+h1 {
+  font-size: 40px;
+  margin-bottom: 30px;
+  color: #000000;
+}
+
+/* ===== أزرار عامة ===== */
+button {
+  font-family: 'Cairo', sans-serif;
+  font-size: 24px;
+  padding: 14px 28px;
+  margin: 10px 5px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* أزرار الصفحة الرئيسية */
+.center button {
+  width: 150px;
+  background: #5e1ba1;
+  color: white;
+}
+
+.center button:hover {
+  background: #4a0755;
+  transform: translateY(-2px);
+}
+
+/* ===== الكروت ===== */
+.card {
+  background: white;
+  padding: 20px 25px;
+  margin: 20px 0;
+  border-radius: 16px;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: scale(1.01);
+}
+
+.card p {
+  font-size: 18px;
+  margin: 8px 0;
+}
+
+/* ===== أزرار خاصة ===== */
+.approve {
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
+  color: white;
+}
+
+.reject {
+  background: linear-gradient(135deg, #f39c12, #e67e22);
+  color: white;
+}
+
+.delete {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
+}
+
+.approve:hover,
+.reject:hover,
+.delete:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* زر الرجوع */
+.container > button {
+  background: #1e1582;
+  color: white;
+}
+
+.container > button:hover {
+  background: #170b6e;
+}
+
+/* صور المستخدم */
+.card img {
+  margin-top: 10px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
+
+/* ===== موبايل ===== */
+@media (max-width: 600px) {
+  h1 {
+    font-size: 40px;
+  }
+
+  button {
+    width: 100%;
+    font-size: 20px;
+  }
+
+  .center button {
+    width: 100%;
+  }
+}

@@ -6,7 +6,6 @@ import 'package:housing_app/view/HomePage/Profile/booking_requests.dart';
 import 'package:housing_app/view/HomePage/Profile/edit_profile.dart';
 import 'package:housing_app/view/HomePage/Profile/setting_page.dart';
 import 'package:housing_app/view/auth/welcom_page.dart';
-
 import '../../../model/auth_model.dart';
 
 class ProfilePage extends StatelessWidget {

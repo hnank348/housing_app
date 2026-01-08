@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 
 class CardItem extends StatelessWidget {
-  // جعلنا الـ children بارامتر أساسي في البداية ليتناسب مع استدعائك
   final List<Widget> children;
   final Color? backgroundColor;
 
   const CardItem(
-      this.children, { // هنا التعديل ليناسب الاستدعاء المباشر
+      this.children, {
         super.key,
         this.backgroundColor,
       });
@@ -18,7 +17,6 @@ class CardItem extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-       // color: backgroundColor ?? Colors.white,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(

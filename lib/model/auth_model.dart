@@ -48,7 +48,7 @@ class UserModel {
   factory UserModel.fromJson(Map<String, dynamic> json) {
     String cleanUrl(String? url) {
       if (url == null || url.isEmpty) return '';
-      return url.replaceAll(RegExp(r'http://[0-9.]+:8000'), Constantapi.baseUrl);
+      return url.replaceAll(RegExp(r'http://[0-9.]+:8000'), ConstantApi.baseUrl);
     }
 
     return UserModel(

@@ -12,7 +12,7 @@ Future update(BuildContext context, String? firstN, String? lastN, String? birth
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final token = prefs.getString('userToken') ?? '';
 
-  var url = Uri.parse("${Constantapi.update}/$id");
+  var url = Uri.parse("${ConstantApi.update}/$id");
 
   var request = http.MultipartRequest("POST", url);
 

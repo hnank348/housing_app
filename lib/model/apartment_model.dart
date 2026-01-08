@@ -69,7 +69,7 @@ class ApartmentImage {
 
   factory ApartmentImage.fromJson(Map<String, dynamic> json) {
     String rawUrl = json['image_url']?.toString() ?? '';
-    String currentIp = Constantapi.url;
+    String currentIp = ConstantApi.url;
 
     String fixedUrl = rawUrl.replaceAll(RegExp(r'http://[0-9.]+:8000'), 'http://$currentIp:8000');
 

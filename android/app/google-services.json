@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "883530810558",
+    "project_id": "push-notifications-cf725",
+    "storage_bucket": "push-notifications-cf725.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:883530810558:android:01050bede1f9b5cad88aef",
+        "android_client_info": {
+          "package_name": "com.example.housing_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7LYRBrrzHzJ41FFRAyVh7i9yjro_iwkM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

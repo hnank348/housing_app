@@ -15,11 +15,11 @@ class WelcomPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
         
           children: [
+            SizedBox(height: 100),
             Stack(
               alignment: Alignment.bottomCenter,
               children:[Image(image:AssetImage('assets/Image/logo.jpg')),]
             ),
-           // SizedBox(height: 10),
             Text(
               'Housing App'.tr(),
               style: TextStyle(

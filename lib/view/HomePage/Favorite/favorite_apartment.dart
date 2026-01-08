@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:housing_app/model/apartment_model.dart';
-import 'package:housing_app/widgets/BottomNavBar.dart';
-import 'package:housing_app/widgets/apartment_pad.dart';
+import 'package:housing_app/itemWidget/BottomNavBar.dart';
+import 'package:housing_app/view/HomePage/Apartment/apartment_list.dart';
 
-import '../../../data/api/Apartment/favorite_api.dart';
+import '../../../data/api/Favorite/favorite_api.dart';
 
 class FavoriteApartment extends StatelessWidget {
   const FavoriteApartment({super.key});
@@ -14,7 +14,7 @@ class FavoriteApartment extends StatelessWidget {
     return Scaffold(
       bottomNavigationBar: const BottomNavBar(),
       appBar: AppBar(
-        backgroundColor: const Color(0xff073D5F),
+        backgroundColor: const Color(0xff2D5C7A),
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
         title: Text(
@@ -24,12 +24,12 @@ class FavoriteApartment extends StatelessWidget {
         actions: const [
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 15),
-            child: Icon(Icons.favorite, color: Colors.white),
+            child: Icon(Icons.favorite, color: Colors.red),
           ),
         ],
       ),
       body: FutureBuilder<List<ApartmentModel>>(
-        future: FavoriteService().getMyFavorites(),
+        future: getMyFavorites(),
         builder: (context, snapshot) {
 
           if (snapshot.connectionState == ConnectionState.waiting) {

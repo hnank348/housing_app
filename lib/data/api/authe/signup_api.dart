@@ -18,7 +18,7 @@ Future signUp(
     String pass,
     File idImage,
     ) async {
- String url=Constantapi.signup;
+ String url=ConstantApi.signup;
   var headers = {'Accept': 'application/json'};
   var request = http.MultipartRequest(
     'POST',

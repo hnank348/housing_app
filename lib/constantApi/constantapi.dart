@@ -1,8 +1,8 @@
 
-class Constantapi {
+class ConstantApi {
   static const String url="127.0.0.1";
   static const String baseUrl ='http://$url:8000';
-
+  static const String notifications='$baseUrl/api/notifications';
   static const String signup='$baseUrl/api/register';
   static const String login ='$baseUrl/api/login';
   static const String show ='$baseUrl/api/me';

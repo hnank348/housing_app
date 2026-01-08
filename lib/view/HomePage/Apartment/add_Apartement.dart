@@ -6,7 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../../itemWidget/card_item.dart';
 import '../../../itemWidget/images.dart';
 import '../../../itemWidget/text_field_widget.dart';
-import '../../../services/add_Apartement.dart';
+import '../../../data/api/Apartment/add_Apartement.dart';
 
 class AddApartmentPage extends StatefulWidget {
   const AddApartmentPage({super.key});

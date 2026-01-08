@@ -22,8 +22,8 @@ class BookingResponse {
 
 class BookingModel {
   final int bookingId;
-  final ApartmentShortInfo apartment;
-  final ClientInfo client;
+  final ApartmentShort apartment;
+  final Client client;
   final String startDate;
   final String endDate;
   final String totalPrice;
@@ -44,8 +44,8 @@ class BookingModel {
   factory BookingModel.fromJson(Map<String, dynamic> json) {
     return BookingModel(
       bookingId: json['booking_id'],
-      apartment: ApartmentShortInfo.fromJson(json['apartment'] ?? {}),
-      client: ClientInfo.fromJson(json['client'] ?? {}),
+      apartment: ApartmentShort.fromJson(json['apartment'] ?? {}),
+      client: Client.fromJson(json['client'] ?? {}),
       startDate: json['start_date'] ?? '',
       endDate: json['end_date'] ?? '',
       totalPrice: json['total_price'] ?? '0.00',
@@ -55,29 +55,29 @@ class BookingModel {
   }
 }
 
-class ApartmentShortInfo {
+class ApartmentShort {
   final int id;
   final String title;
 
-  ApartmentShortInfo({required this.id, required this.title});
+  ApartmentShort({required this.id, required this.title});
 
-  factory ApartmentShortInfo.fromJson(Map<String, dynamic> json) {
-    return ApartmentShortInfo(
+  factory ApartmentShort.fromJson(Map<String, dynamic> json) {
+    return ApartmentShort(
       id: json['id'] ?? 0,
       title: json['title'] ?? '',
     );
   }
 }
 
-class ClientInfo {
+class Client {
   final int id;
   final String firstName;
   final String lastName;
 
-  ClientInfo({required this.id, required this.firstName, required this.lastName});
+  Client({required this.id, required this.firstName, required this.lastName});
 
-  factory ClientInfo.fromJson(Map<String, dynamic> json) {
-    return ClientInfo(
+  factory Client.fromJson(Map<String, dynamic> json) {
+    return Client(
       id: json['id'] ?? 0,
       firstName: json['first_name'] ?? '',
       lastName: json['last_name'] ?? '',

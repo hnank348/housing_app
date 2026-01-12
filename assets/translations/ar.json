@@ -19,6 +19,7 @@
   "Area": "المساحة",
   "Area and costs": "المساحة والتكاليف",
   "Area m²": "المساحة م²",
+  "Apartment": "الشقة",
   "Bathrooms": "الحمامات",
   "Birth Date": "تاريخ الميلاد",
   "Book Now": "احجز الان",
@@ -81,7 +82,7 @@
   "Please select end date": "من فضلك اختر تاريخ نهاية الحجز",
   "Please select start date": "من فضلك اختر تاريخ بداية الحجز",
   "Please wait for admin approval to activate your account": "انتظر موافقة المدير لتفعيل الحساب من فضلك",
-  "Price / month": "السعر / شهر",
+  "Price / Day": "السعر / يوم",
   "Price:": "السعر الإجمالي:",
   "Profile": "الملف الشخصي",
   "Real state ID": "رقم العقار",
@@ -97,6 +98,7 @@
   "Removed to favorite": "تمت الإزالة من المفضلة",
   "Reviews": "التقييمات",
   "Rooms": "الغرف",
+  "Refresh": "تحديث",
   "SIGN UP": "إنشاء حساب",
   "SYP": "ل.س",
   "Save": "حفظ",
@@ -137,5 +139,11 @@
   "required": "مطلوب",
   "search": "البحث",
   "to": "إلى",
-  "update booking": "تعديل الحجز"
+  "update booking": "تعديل الحجز",
+  "No requests found": "لا يوجد طلبات",
+  "You don\\'t have any booking requests yet": "لا يوجد اي طلبات حجز بعد",
+  "Booking Rejected": "رفض الحجز",
+  "Sorry, your booking request has been rejected.": "عذراً، تم رفض طلب الحجز الخاص بك.",
+  "Booking Approved": "قبول الحجز",
+  "Your booking request has been successfully approved.": "تمت الموافقة على طلب الحجز الخاص بك بنجاح"
 }

@@ -75,22 +75,42 @@ class _EditProfileState extends State<EditProfile> {
             padding: const EdgeInsets.only(top: 40, left: 10, right: 10),
             child: Column(
               children: [
-                GestureDetector(
-                  onTap: profImage,
-                  child: CircleAvatar(
-                    radius: 85,
-                    backgroundColor: const Color(0xff2D5C7A),
-                    child: CircleAvatar(
-                      radius: 80,
-                      backgroundImage: Images.profImage != null
-                          ? FileImage(Images.profImage!)
-                          : (widget.user.profileImage.isNotEmpty
-                          ? NetworkImage(widget.user.profileImage)
-                          : const AssetImage('assets/Image/logo sign up.jpg')) as ImageProvider,
+                Stack(
+                  children: [
+                    GestureDetector(
+                      onTap: profImage,
+                      child: CircleAvatar(
+                        radius: 85,
+                        backgroundColor: const Color(0xff2D5C7A),
+                        child: CircleAvatar(
+                          radius: 80,
+                          backgroundImage: Images.profImage != null
+                              ? FileImage(Images.profImage!)
+                              : (widget.user.profileImage.isNotEmpty
+                              ? NetworkImage(widget.user.profileImage)
+                              : const AssetImage('assets/Image/logo sign up.jpg')) as ImageProvider,
+                        ),
+                      ),
                     ),
-                  ),
+                    Positioned(
+                      bottom: 8,
+                      right: 8,
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: const BoxDecoration(
+                          color: Color(0xff2D5C7A),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.camera_alt,
+                          color: Colors.white,
+                          size: 22,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 20),
+                 SizedBox(height: 20),
                 TextFieldItem(
                   hinit: 'First Name'.tr(),
                   color: const Color(0xff2D5C7A),

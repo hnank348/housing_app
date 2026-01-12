@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:housing_app/constantApi/constantapi.dart';
@@ -26,11 +27,10 @@ Future<String> DeleteRequests(int bookingId, int userId) async {
 
     if (response.statusCode == 200) {
 
-      // 2. استدعاء دالة إرسال الإشعار عند نجاح الحذف
       sendNotification(
         userId: userId,
-        title: "Booking Rejected",
-        message: "عذراً، تم رفض طلب الحجز الخاص بك.",
+        title: "Booking Rejected".tr(),
+        message: "Sorry, your booking request has been rejected.".tr(),
       );
 
       return data['message'] ?? "Deleted successfully";

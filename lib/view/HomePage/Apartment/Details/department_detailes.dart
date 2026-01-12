@@ -28,7 +28,7 @@ class _RealEstateAppState extends State<RealEstateApp> {
   @override
   void initState() {
     super.initState();
-    favorit =  false;
+    favorit = false;
     _loadInitialRatings();
   }
 
@@ -56,7 +56,7 @@ class _RealEstateAppState extends State<RealEstateApp> {
         actions: [
           TextButton(onPressed: () => Navigator.pop(ctx), child: const Text("Cancel").tr()),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
             onPressed: () async {
               Navigator.pop(ctx);
               String serverResponse = await deleteApartment(widget.apartment.id);
@@ -65,7 +65,7 @@ class _RealEstateAppState extends State<RealEstateApp> {
                 Navigator.pop(context);
               }
             },
-            child: const Text("Delete now").tr(),
+            child: const Text("Delete now", style: TextStyle(color: Colors.white)).tr(),
           ),
         ],
       ),
@@ -74,12 +74,15 @@ class _RealEstateAppState extends State<RealEstateApp> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
             expandedHeight: 300,
             pinned: true,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             flexibleSpace: FlexibleSpaceBar(
               background: DepartementDetails(
                 images: widget.apartment.images.map((img) => img.imageUrl).toList(),
@@ -91,12 +94,8 @@ class _RealEstateAppState extends State<RealEstateApp> {
               IconButton(
                 onPressed: () async {
                   String? result = await toggleFavorite(widget.apartment.id);
-
                   if (result != null) {
-                    setState(() {
-                      favorit = (result == "added");
-                    });
-
+                    setState(() => favorit = (result == "added"));
                     if (mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -106,28 +105,22 @@ class _RealEstateAppState extends State<RealEstateApp> {
                         ),
                       );
                     }
-                  } else {
-                    if (mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("عذراً، فشلت العملية. تأكد من تسجيل الدخول")),
-                      );
-                    }
                   }
                 },
-                icon: Icon(Icons.favorite, size: 35, color: favorit ? Colors.red : Colors.white),
+                icon: Icon(Icons.favorite, size: 30, color: favorit ? Colors.red : Colors.white),
               ),
               IconButton(
                 onPressed: _confirmDelete,
-                icon: const Icon(Icons.delete, size: 35, color: Colors.white70),
+                icon: const Icon(Icons.delete, size: 30, color: Colors.white),
               ),
               IconButton(
-                onPressed: (){
+                onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => UpdateApartment(apartment: widget.apartment,)),
+                    MaterialPageRoute(builder: (_) => UpdateApartment(apartment: widget.apartment)),
                   );
                 },
-                icon: const Icon(Icons.published_with_changes_outlined, size: 35, color: Colors.white70),
+                icon: const Icon(Icons.edit_note, size: 30, color: Colors.white),
               ),
             ],
           ),
@@ -160,10 +153,7 @@ class _RealEstateAppState extends State<RealEstateApp> {
                   const SizedBox(height: 20),
                   isLoadingRatings
                       ? const Center(child: CircularProgressIndicator())
-                      : CommentsSection(
-                      ratings: ratingsList,
-                      average: averageRating
-                  ),
+                      : CommentsSection(ratings: ratingsList, average: averageRating),
                   const SizedBox(height: 20),
                   Button(
                     text: 'Book Now'.tr(),
@@ -195,6 +185,7 @@ class FeatureSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -202,14 +193,19 @@ class FeatureSection extends StatelessWidget {
         const SizedBox(height: 10),
         Row(
           children: [
-            const Icon(Icons.location_on, size: 18, color: Colors.grey),
+            Icon(Icons.location_on, size: 18, color: isDark ? Colors.grey[400] : Colors.grey),
             const SizedBox(width: 4),
-            Expanded(child: Text(location, style: TextStyle(fontSize: 16, color: Colors.grey[700]))),
-            Icon(Icons.star, color: Colors.amber, size: 20),
+            Expanded(
+              child: Text(
+                location,
+                style: TextStyle(fontSize: 16, color: isDark ? Colors.grey[400] : Colors.grey[700]),
+              ),
+            ),
+            const Icon(Icons.star, color: Colors.amber, size: 20),
             const SizedBox(width: 4),
             Text(
-                rating > 0 ? rating.toStringAsFixed(1) : "0.0",
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)
+              rating > 0 ? rating.toStringAsFixed(1) : "0.0",
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -226,18 +222,18 @@ class CommentsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text("${'Reviews'.tr()} ($average)",
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            Text("${'Reviews'.tr()} ($average)", style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             Row(
               children: List.generate(5, (index) => Icon(
                 Icons.star,
-                color: index < average.floor() ? Colors.amber : Colors.grey[300],
+                color: index < average.floor() ? Colors.amber : Colors.grey[400],
                 size: 20,
               )),
             ),
@@ -259,9 +255,9 @@ class CommentsSection extends StatelessWidget {
             return Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.grey[50],
+                color: isDark ? Colors.white.withOpacity(0.05) : Colors.grey[50],
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey[200]!),
+                border: Border.all(color: isDark ? Colors.white12 : Colors.grey[200]!),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -272,7 +268,7 @@ class CommentsSection extends StatelessWidget {
                       Text("${item['client']['first_name']} ${item['client']['last_name']}",
                           style: const TextStyle(fontWeight: FontWeight.bold)),
                       Text(item['created_at'].toString().split('T')[0],
-                          style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                          style: TextStyle(fontSize: 12, color: isDark ? Colors.grey[500] : Colors.grey)),
                     ],
                   ),
                   const SizedBox(height: 5),
@@ -280,11 +276,12 @@ class CommentsSection extends StatelessWidget {
                     children: List.generate(5, (i) => Icon(
                       Icons.star,
                       size: 16,
-                      color: i < (item['rating'] as int) ? Colors.amber : Colors.grey[300],
+                      color: i < (item['rating'] as int) ? Colors.amber : Colors.grey[400],
                     )),
                   ),
                   const SizedBox(height: 8),
-                  Text(item['comment'] ?? "", style: const TextStyle(color: Colors.black87)),
+                  Text(item['comment'] ?? "",
+                      style: TextStyle(color: isDark ? Colors.white70 : Colors.black87)),
                 ],
               ),
             );
@@ -321,31 +318,31 @@ class BedRooms extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Expanded(child: _buildIconInfo(Icons.bed, "${'Rooms'.tr()} $bedrooms")),
+        Expanded(child: _buildIconInfo(context, Icons.bed, "${'Rooms'.tr()} $bedrooms")),
         const SizedBox(width: 5),
-        Expanded(child: _buildIconInfo(Icons.bathtub, "${'Bathrooms'.tr()} $bathrooms")),
+        Expanded(child: _buildIconInfo(context, Icons.bathtub, "${'Bathrooms'.tr()} $bathrooms")),
         const SizedBox(width: 5),
-        Expanded(child: _buildIconInfo(Icons.square_foot, "$area ${'m²'.tr()}")),
+        Expanded(child: _buildIconInfo(context, Icons.square_foot, "$area ${'m²'.tr()}")),
       ],
     );
   }
 
-  Widget _buildIconInfo(IconData icon, String text) {
+  Widget _buildIconInfo(BuildContext context, IconData icon, String text) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
       decoration: BoxDecoration(
-          color: Colors.blue[50],
-          borderRadius: BorderRadius.circular(12)
-      ),
+          color: isDark ? Colors.blue.withOpacity(0.1) : Colors.blue[50],
+          borderRadius: BorderRadius.circular(12)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 16, color: Colors.blue),
+          Icon(icon, size: 16, color: Colors.blueAccent),
           const SizedBox(width: 4),
           Flexible(
             child: Text(
               text,
-              style: const TextStyle(color: Colors.black, fontSize: 12),
+              style: TextStyle(color: isDark ? Colors.white : Colors.black, fontSize: 12),
               overflow: TextOverflow.ellipsis,
             ),
           )
@@ -361,16 +358,23 @@ class Profile extends StatelessWidget {
   const Profile({super.key, required this.name, required this.type, required this.stars});
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       padding: const EdgeInsets.all(15),
-      decoration: BoxDecoration(color: Colors.orange[50], borderRadius: BorderRadius.circular(15)),
+      decoration: BoxDecoration(
+          color: isDark ? Colors.orange.withOpacity(0.1) : Colors.orange[50],
+          borderRadius: BorderRadius.circular(15)),
       child: Row(
         children: [
-          const CircleAvatar(radius: 25, child: Icon(Icons.person)),
+          CircleAvatar(
+              radius: 25,
+              backgroundColor: Colors.blueAccent.withOpacity(0.2),
+              child: const Icon(Icons.person, color: Colors.blueAccent)),
           const SizedBox(width: 15),
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.blueAccent)),
-            Text(type, style: const TextStyle(color: Colors.grey)),
+            Text(name,
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.blueAccent)),
+            Text(type, style: TextStyle(color: isDark ? Colors.grey[400] : Colors.grey)),
           ]),
         ],
       ),
@@ -395,7 +399,7 @@ class DepartementDetails extends StatelessWidget {
     if (images.isEmpty) {
       return Container(
         color: Colors.grey,
-        child: const Center(child: Icon(Icons.image_not_supported, size: 50)),
+        child: const Center(child: Icon(Icons.image_not_supported, size: 50, color: Colors.white)),
       );
     }
 
@@ -408,10 +412,9 @@ class DepartementDetails extends StatelessWidget {
             images[index],
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) =>
-                Container(color: Colors.grey[200], child: const Icon(Icons.error)),
+                Container(color: Colors.grey[300], child: const Icon(Icons.error, color: Colors.red)),
           ),
         ),
-
         Positioned(
           bottom: 15,
           right: 15,

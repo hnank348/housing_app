@@ -179,22 +179,26 @@ class _MyBookingsScreenState extends State<MyBookingsScreen>
             Expanded(
               child: Text(
                 "هذا الحجز مرتبط ببيانات غير متوفرة حالياً (ربما تم حذف الشقة)",
-                style: TextStyle(fontFamily: 'Cairo', color: Colors.red.shade900),
+                style: TextStyle(
+                    fontFamily: 'Cairo', color: Colors.red.shade900),
               ),
             ),
           ],
         ),
       );
     }
-
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme
+            .of(context)
+            .cardColor, // يتغير تلقائياً بين الأبيض والأسود
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: Colors.black.withOpacity(Theme
+                .of(context)
+                .brightness == Brightness.dark ? 0.3 : 0.08),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -206,7 +210,11 @@ class _MyBookingsScreenState extends State<MyBookingsScreen>
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: lightBlue,
+              color: Theme
+                  .of(context)
+                  .brightness == Brightness.dark
+                  ? primaryColor.withOpacity(0.2)
+                  : lightBlue, // خلفية الهيدر في الوضعين
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(16),
                 topRight: Radius.circular(16),
@@ -224,7 +232,11 @@ class _MyBookingsScreenState extends State<MyBookingsScreen>
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: primaryColor,
+                          color: Theme
+                              .of(context)
+                              .brightness == Brightness.dark
+                              ? Colors.white
+                              : primaryColor,
                           fontFamily: 'Cairo',
                         ),
                         overflow: TextOverflow.ellipsis,
@@ -235,7 +247,9 @@ class _MyBookingsScreenState extends State<MyBookingsScreen>
                         '${'Booking ID:'.tr()} ${booking.id}',
                         style: TextStyle(
                           fontSize: 12,
-                          color: lightText,
+                          color: Theme
+                              .of(context)
+                              .hintColor, // لون رمادي مناسب للوضعين
                           fontFamily: 'Cairo',
                         ),
                       ),
@@ -244,7 +258,8 @@ class _MyBookingsScreenState extends State<MyBookingsScreen>
                 ),
                 const SizedBox(width: 8),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
                     color: _getStatusColor(booking.status),
                     borderRadius: BorderRadius.circular(20),
@@ -276,13 +291,17 @@ class _MyBookingsScreenState extends State<MyBookingsScreen>
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Icon(Icons.location_on_outlined, size: 18, color: secondaryColor),
+                        Icon(Icons.location_on_outlined, size: 18,
+                            color: secondaryColor),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            '${booking.apartment?['city']} - ${booking.apartment?['address'] ?? ''}',
+                            '${booking.apartment?['city']} - ${booking
+                                .apartment?['address'] ?? ''}',
                             style: TextStyle(
-                              color: lightText,
+                              color: Theme
+                                  .of(context)
+                                  .hintColor,
                               fontSize: 14,
                               fontFamily: 'Cairo',
                             ),
@@ -300,14 +319,21 @@ class _MyBookingsScreenState extends State<MyBookingsScreen>
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(Icons.calendar_today_outlined, size: 18, color: secondaryColor),
+                      Icon(Icons.calendar_today_outlined, size: 18,
+                          color: secondaryColor),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          '${"from".tr()} ${_formatDate(booking.startDate)} ${"to".tr()} ${_formatDate(booking.endDate)}',
+                          '${"from".tr()} ${_formatDate(booking
+                              .startDate)} ${"to".tr()} ${_formatDate(booking
+                              .endDate)}',
                           style: TextStyle(
                             fontSize: 14,
-                            color: darkText,
+                            color: Theme
+                                .of(context)
+                                .textTheme
+                                .bodyLarge
+                                ?.color,
                             fontFamily: 'Cairo',
                           ),
                           maxLines: 2,
@@ -322,7 +348,11 @@ class _MyBookingsScreenState extends State<MyBookingsScreen>
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: const Color(0xffF8FAFD),
+                    color: Theme
+                        .of(context)
+                        .brightness == Brightness.dark
+                        ? Colors.white.withOpacity(0.05)
+                        : const Color(0xffF8FAFD),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
@@ -345,7 +375,10 @@ class _MyBookingsScreenState extends State<MyBookingsScreen>
                       ),
                       _buildDetailItem(
                         icon: Icons.attach_money_outlined,
-                        value: '${double.tryParse(booking.apartment?['price_per_day']?.toString() ?? '0')?.toStringAsFixed(0) ?? '0'}',
+                        value: '${double
+                            .tryParse(booking
+                            .apartment?['price_per_day']?.toString() ?? '0')
+                            ?.toStringAsFixed(0) ?? '0'}',
                         label: 'day/SYP'.tr(),
                       ),
                     ],
@@ -362,7 +395,11 @@ class _MyBookingsScreenState extends State<MyBookingsScreen>
                       'Price:',
                       style: TextStyle(
                         fontSize: 16,
-                        color: darkText,
+                        color: Theme
+                            .of(context)
+                            .textTheme
+                            .bodyLarge
+                            ?.color,
                         fontWeight: FontWeight.w600,
                         fontFamily: 'Cairo',
                       ),
@@ -372,7 +409,11 @@ class _MyBookingsScreenState extends State<MyBookingsScreen>
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: primaryColor,
+                        color: Theme
+                            .of(context)
+                            .brightness == Brightness.dark
+                            ? goldColor
+                            : primaryColor,
                         fontFamily: 'Cairo',
                       ),
                     ),
@@ -382,10 +423,12 @@ class _MyBookingsScreenState extends State<MyBookingsScreen>
                 const SizedBox(height: 16),
 
                 // Action Buttons
-                if (booking.canModify || booking.canReview || booking.ownerApproval == 'approved')
+                if (booking.canModify || booking.canReview ||
+                    booking.ownerApproval == 'approved')
                   Column(
                     children: [
-                      if (booking.canModify || booking.ownerApproval == 'approved')
+                      if (booking.canModify ||
+                          booking.ownerApproval == 'approved')
                         Row(
                           children: [
                             if (booking.canModify)
@@ -397,20 +440,25 @@ class _MyBookingsScreenState extends State<MyBookingsScreen>
                                   onPressed: () => _updateBooking(booking),
                                 ),
                               ),
-                            if (booking.canModify && booking.ownerApproval == 'approved'||booking.ownerApproval=='pending')
+                            if (booking.canModify &&
+                                (booking.ownerApproval == 'approved' ||
+                                    booking.ownerApproval == 'pending'))
                               const SizedBox(width: 12),
-                            if (booking.ownerApproval == 'approved'||booking.ownerApproval=='pending')
+                            if (booking.ownerApproval == 'approved' ||
+                                booking.ownerApproval == 'pending')
                               Expanded(
                                 child: _buildActionButton(
                                   icon: Icons.cancel_outlined,
                                   text: 'cancel booking'.tr(),
                                   color: Colors.red,
-                                  onPressed: () => _showCancelDialog(booking.id),
+                                  onPressed: () =>
+                                      _showCancelDialog(booking.id),
                                 ),
                               ),
                           ],
                         ),
-                      if (booking.canReview || booking.ownerApproval == 'approved')
+                      if (booking.canReview ||
+                          booking.ownerApproval == 'approved')
                         const SizedBox(height: 12),
                       if (booking.ownerApproval == 'approved')
                         _buildActionButton(
@@ -428,7 +476,6 @@ class _MyBookingsScreenState extends State<MyBookingsScreen>
       ),
     );
   }
-
   Widget _buildActionButton({
     required IconData icon,
     required String text,
@@ -534,6 +581,7 @@ class _MyBookingsScreenState extends State<MyBookingsScreen>
   }
 
   void _showCancelDialog(int bookingId) {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
     showDialog(
       context: context,
       builder: (context) => Dialog(
@@ -543,7 +591,7 @@ class _MyBookingsScreenState extends State<MyBookingsScreen>
         child: Container(
           padding: EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).dialogBackgroundColor,
             borderRadius: BorderRadius.circular(16),
           ),
           child: Column(
@@ -560,7 +608,7 @@ class _MyBookingsScreenState extends State<MyBookingsScreen>
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: primaryColor,
+                  color: isDark ? Colors.white : primaryColor,
                   fontFamily: 'Cairo',
                 ),
               ).tr(),
@@ -570,7 +618,7 @@ class _MyBookingsScreenState extends State<MyBookingsScreen>
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,
-                  color: lightText,
+                  color: isDark ? Colors.grey[400] : lightText,
                   fontFamily: 'Cairo',
                 ),
               ).tr(),
@@ -585,12 +633,12 @@ class _MyBookingsScreenState extends State<MyBookingsScreen>
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        side: BorderSide(color: primaryColor),
+                        side: BorderSide(color: isDark ? secondaryColor : primaryColor),
                       ),
                       child: Text(
                         'Cancel',
                         style: TextStyle(
-                          color: primaryColor,
+                          color: isDark ? secondaryColor : primaryColor,
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                           fontFamily: 'Cairo',
@@ -656,6 +704,7 @@ class _MyBookingsScreenState extends State<MyBookingsScreen>
     DateTime? newEndDate;
     final startController = TextEditingController(text: booking.startDate);
     final endController = TextEditingController(text: booking.endDate);
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
 
     await showDialog(
       context: context,
@@ -666,7 +715,7 @@ class _MyBookingsScreenState extends State<MyBookingsScreen>
         child: Container(
           padding: EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).dialogBackgroundColor,
             borderRadius: BorderRadius.circular(16),
           ),
           child: Column(
@@ -677,7 +726,7 @@ class _MyBookingsScreenState extends State<MyBookingsScreen>
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: primaryColor,
+                  color: isDark ? Colors.white : primaryColor,
                   fontFamily: 'Cairo',
                 ),
               ).tr(),
@@ -686,16 +735,22 @@ class _MyBookingsScreenState extends State<MyBookingsScreen>
                 '${'Booking ID:'.tr()} ${booking.id}',
                 style: TextStyle(
                   fontSize: 16,
-                  color: lightText,
+                  color: isDark ? Colors.grey[400] : lightText,
                   fontFamily: 'Cairo',
                 ),
               ),
               SizedBox(height: 16),
               TextField(
                 controller: startController,
+                style: TextStyle(color: isDark ? Colors.white : Colors.black),
                 decoration: InputDecoration(
                   labelText: 'Start Date'.tr(),
-                  prefixIcon: Icon(Icons.calendar_today, color: primaryColor),
+                  labelStyle: TextStyle(color: isDark ? Colors.grey[400] : null),
+                  prefixIcon: Icon(Icons.calendar_today, color: isDark ? secondaryColor : primaryColor),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: isDark ? Colors.grey[700]! : Colors.grey),
+                  ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -717,9 +772,15 @@ class _MyBookingsScreenState extends State<MyBookingsScreen>
               SizedBox(height: 12),
               TextField(
                 controller: endController,
+                style: TextStyle(color: isDark ? Colors.white : Colors.black),
                 decoration: InputDecoration(
                   labelText: 'End Date'.tr(),
-                  prefixIcon: Icon(Icons.calendar_today, color: primaryColor),
+                  labelStyle: TextStyle(color: isDark ? Colors.grey[400] : null),
+                  prefixIcon: Icon(Icons.calendar_today, color: isDark ? secondaryColor : primaryColor),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: isDark ? Colors.grey[700]! : Colors.grey),
+                  ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -749,12 +810,12 @@ class _MyBookingsScreenState extends State<MyBookingsScreen>
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        side: BorderSide(color: primaryColor),
+                        side: BorderSide(color: isDark ? secondaryColor : primaryColor),
                       ),
                       child: Text(
                         'Cancel',
                         style: TextStyle(
-                          color: primaryColor,
+                          color: isDark ? secondaryColor : primaryColor,
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                           fontFamily: 'Cairo',
@@ -828,175 +889,195 @@ class _MyBookingsScreenState extends State<MyBookingsScreen>
 
   Future<void> _showReviewDialog(Booking booking) async {
     double rating = 5.0;
-    //String reviewText = '';
+
+    // 1. تنظيف الـ Controller قبل فتح الديالوج لضمان عدم إرسال قيم قديمة أو null
+    adminReviewTextController.clear();
 
     await showDialog(
       context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) {
-          return Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Container(
-              padding: EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: Colors.white,
+      builder: (context) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Dialog(
+              backgroundColor: Theme.of(context).cardColor,
+              shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(height: 8),
-                  Text(
-                    'Real state valuation',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: primaryColor,
-                      fontFamily: 'Cairo',
-                    ),
-                  ).tr(),
-                  SizedBox(height: 8),
-                  Text(
-                    booking.apartment?['title'] ?? 'شقة',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: lightText,
-                      fontFamily: 'Cairo',
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    'How was your experience in this real state?',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: darkText,
-                      fontFamily: 'Cairo',
-                    ),
-                  ).tr(),
-                  SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(5, (index) {
-                      return IconButton(
-                        icon: Icon(
-                          index < rating.floor()
-                              ? Icons.star
-                              : Icons.star_border,
-                          size: 40,
-                          color: goldColor,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            rating = index + 1.0;
-                          });
-                        },
-                      );
-                    }),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    '${rating.toInt()} / 5',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: primaryColor,
-                      fontFamily: 'Cairo',
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  TextField(
-                    controller: adminReviewTextController,
-                    decoration: InputDecoration(
-                      labelText: 'Write your review (optional)'.tr(),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      alignLabelWithHint: true,
-                    ),
-                    maxLines: 4,
-                    onChanged: (value) {
-                      adminReviewTextController.text = value;
-                    },
-                  ),
-                  SizedBox(height: 24),
-                  Row(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () => Navigator.pop(context),
-                          style: OutlinedButton.styleFrom(
-                            padding: EdgeInsets.symmetric(vertical: 14),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            side: BorderSide(color: primaryColor),
-                          ),
-                          child: Text(
-                            'Cancel',
-                            style: TextStyle(
-                              color: primaryColor,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              fontFamily: 'Cairo',
-                            ),
-                          ).tr(),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Real state valuation',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: isDark ? Colors.white : primaryColor,
+                          fontFamily: 'Cairo',
+                        ),
+                      ).tr(),
+                      const SizedBox(height: 8),
+                      Text(
+                        booking.apartment?['title'] ?? 'شقة',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: isDark ? Colors.grey[400] : Colors.grey[700],
+                          fontFamily: 'Cairo',
                         ),
                       ),
-                      SizedBox(width: 12),
-                      Expanded(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [goldColor, Color(0xffFFB347)],
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight,
-                            ),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Material(
-                            color: Colors.transparent,
-                            borderRadius: BorderRadius.circular(12),
-                            child: InkWell(
-                              onTap: () {
-                                _submitReviewToServer(
-                                  booking.id,
-                                  rating.toInt(),
-                                  adminReviewTextController.text,
-                                );
-                                Navigator.pop(context);
+                      const SizedBox(height: 16),
+                      Text(
+                        'How was your experience in this real state?',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: isDark ? Colors.grey[300] : Colors.black87,
+                          fontFamily: 'Cairo',
+                        ),
+                      ).tr(),
+                      const SizedBox(height: 16),
+                      FittedBox(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(5, (index) {
+                            return IconButton(
+                              icon: Icon(
+                                index < rating.floor() ? Icons.star : Icons.star_border,
+                                size: 40,
+                                color: goldColor,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  rating = index + 1.0;
+                                });
                               },
-                              borderRadius: BorderRadius.circular(12),
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 24,
-                                  vertical: 14,
+                            );
+                          }),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        '${rating.toInt()} / 5',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: isDark ? goldColor : primaryColor,
+                          fontFamily: 'Cairo',
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: adminReviewTextController,
+                        style: TextStyle(color: isDark ? Colors.white : Colors.black),
+                        maxLines: 4,
+                        decoration: InputDecoration(
+                          labelText: 'Write your review (optional)'.tr(),
+                          labelStyle: TextStyle(color: isDark ? Colors.grey[400] : Colors.grey[600]),
+                          filled: true,
+                          fillColor: isDark ? Colors.white.withOpacity(0.05) : Colors.grey[100],
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide.none,
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: primaryColor, width: 1),
+                          ),
+                          alignLabelWithHint: true,
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: OutlinedButton(
+                              onPressed: () => Navigator.pop(context),
+                              style: OutlinedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
-                                child: Center(
-                                  child: Text(
-                                    'Submit the evaluation',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      fontFamily: 'Cairo',
+                                side: BorderSide(color: isDark ? Colors.grey[600]! : primaryColor),
+                              ),
+                              child: Text(
+                                'Cancel',
+                                style: TextStyle(
+                                  color: isDark ? Colors.grey[400] : primaryColor,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Cairo',
+                                ),
+                              ).tr(),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [goldColor, const Color(0xffFFB347)],
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                ),
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: isDark ? [] : [
+                                  BoxShadow(
+                                    color: goldColor.withOpacity(0.3),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 4),
+                                  )
+                                ],
+                              ),
+                              child: Material(
+                                color: Colors.transparent,
+                                borderRadius: BorderRadius.circular(12),
+                                child: InkWell(
+                                  onTap: () {
+                                    String finalComment = adminReviewTextController.text.trim();
+
+                                    _submitReviewToServer(
+                                      booking.id,
+                                      rating.toInt(),
+                                      finalComment,
+                                    );
+
+                                    Navigator.pop(context);
+                                  },
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 14),
+                                    child: Center(
+                                      child: Text(
+                                        'Submit the evaluation',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'Cairo',
+                                        ),
+                                      ).tr(),
                                     ),
-                                  ).tr(),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
+                        ],
                       ),
                     ],
                   ),
-                ],
+                ),
               ),
-            ),
-          );
-        },
-      ),
+            );
+          },
+        );
+      },
     );
   }
 

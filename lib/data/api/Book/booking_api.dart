@@ -178,10 +178,10 @@ print('All my booking::::${response.statusCode}');
   }
 // إرسال تقييم
   static Future<Map<String, dynamic>> submitReview(
-    int bookingId,
-    int rating,
-    String review,
-  ) async {
+      int bookingId,
+      int rating,
+      String review,
+      ) async {
     final token = await _getToken();
     if (token == null) {
       throw Exception('لم يتم العثور على التوكن');
@@ -198,29 +198,32 @@ print('All my booking::::${response.statusCode}');
         body: json.encode({
           'booking_id': bookingId,
           'rating': rating,
-          'review': review,
+          'comment': review, // تم التغيير من 'review' إلى 'comment'
         }),
       );
 
-      if (response.statusCode == 200) {
-        print('Response: ${response.body}');
+      // فك تشفير استجابة السيرفر لمعرفة الخطأ الحقيقي إن وجد
+      final responseData = json.decode(response.body);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        print('Response Success: ${response.body}');
         return {
           'success': true,
-          'message': 'تم إرسال التقييم بنجاح',
+          'message': responseData['message'] ?? 'تم إرسال التقييم بنجاح',
         };
       } else {
-        print('Response: ${response.body}');
+        print('Response Error: ${response.body}');
         return {
           'success': false,
-          'error': 'حدث خطأ في إرسال التقييم',
+          // عرض رسالة الخطأ القادمة من السيرفر بدلاً من رسالة ثابتة
+          'error': responseData['message'] ?? 'حدث خطأ في إرسال التقييم',
         };
       }
     } catch (e) {
+      print('Catch Error: $e');
       return {
         'success': false,
         'error': 'تعذر الاتصال بالخادم',
       };
     }
-  }
-
-}
+  }}

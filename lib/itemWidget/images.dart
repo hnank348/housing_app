@@ -2,11 +2,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 class Images extends StatelessWidget {
-  final File? mainImage;          // للصورة الأساسية
-  final List<File>? multiImages;   // للصور الإضافية
-  final VoidCallback onTap;       // دالة الإضافة
-  final Function(int)? onRemove;  // دالة الحذف (اختيارية)
-  final bool isMulti;             // تحديد هل هو اختيار متعدد أم صورة واحدة
+  final File? mainImage;
+  final List<File>? multiImages;
+  final VoidCallback onTap;
+  final Function(int)? onRemove;
+  final bool isMulti;
 
   const Images({
     super.key,
@@ -14,12 +14,11 @@ class Images extends StatelessWidget {
     this.multiImages,
     required this.onTap,
     this.onRemove,
-    this.isMulti = false, // القيمة الافتراضية هي صورة واحدة
+    this.isMulti = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    // --- 1. تصميم اختيار الصورة الأساسية (Main Image) ---
     if (!isMulti) {
       return GestureDetector(
         onTap: onTap,
@@ -45,7 +44,6 @@ class Images extends StatelessWidget {
       );
     }
 
-    // --- 2. تصميم اختيار الصور الإضافية (Multiple Images) ---
     return SizedBox(
       height: 90,
       child: ListView.builder(

@@ -67,13 +67,30 @@ class _SignupScreenState extends State<SignupScreen> {
                       onTap: profImage,
                       child: CircleAvatar(
                         radius: 65,
-                        backgroundColor: Color(0xff2D5C7A),
+                        backgroundColor: const Color(0xff2D5C7A),
                         child: CircleAvatar(
                           radius: 60,
                           backgroundImage: Images.profImage != null
                               ? FileImage(Images.profImage!)
-                              : AssetImage('assets/Image/logo sign up.jpg')
-                          as ImageProvider,
+                              : const AssetImage('assets/Image/logo sign up.jpg') as ImageProvider,
+                        ),
+                      ),
+                    ),
+                    // إخفاء الأيقونة إذا تم اختيار صورة، أو تركها دائماً (حسب رغبتك)
+                    // هنا قمت بوضعها لتظهر في الزاوية اليمنى السفلية
+                    Positioned(
+                      bottom: 5,
+                      right: 5,
+                      child: Container(
+                        padding: const EdgeInsets.all(5),
+                        decoration: const BoxDecoration(
+                          color: Color(0xff2D5C7A), // لون خلفية الأيقونة
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.camera_alt,
+                          color: Colors.white,
+                          size: 20,
                         ),
                       ),
                     ),

@@ -1,5 +1,6 @@
 
 import 'dart:convert';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:housing_app/constantApi/constantapi.dart';
@@ -28,8 +29,8 @@ Future<String> ApprovedRequests(int bookingId, int userId) async {
 
       await sendNotification(
           userId: userId,
-          title: "Booking Approved",
-          message: "تمت الموافقة على طلب الحجز الخاص بك بنجاح"
+          title: "Booking Approved".tr(),
+          message: "Your booking request has been successfully approved.".tr()
       );
 
       return data['message'] ?? "Approved successfully";

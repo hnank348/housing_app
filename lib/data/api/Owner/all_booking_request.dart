@@ -1,38 +1,42 @@
 import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:housing_app/constantApi/constantapi.dart';
 
+import '../../../constantApi/constantapi.dart';
 import '../../../model/book_model.dart';
 
+Future<BookingResponse> getAllRequests() async {
+  final prefs = await SharedPreferences.getInstance();
+  final String token = prefs.getString('userToken') ?? '';
 
-  Future<BookingResponse> getAllRequests() async {
-    final prefs = await SharedPreferences.getInstance();
-    final String token = prefs.getString('userToken') ?? '';
+  var url = Uri.parse(ConstantApi.all_booking_request);
 
-    var url = Uri.parse(ConstantApi.all_booking_request);
+  try {
+    var response = await http.get(
+      url,
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
 
-    try {
-      var response = await http.get(
-        url,
-        headers: {
-          'Accept': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
+    if (response.statusCode == 200) {
+      Map<String, dynamic> data = jsonDecode(response.body);
+      return BookingResponse.fromJson(data);
+    } else {
+      return BookingResponse(
+          status: false,
+          count: 0,
+          bookings: []
       );
-
-      print("Booking Status Code: ${response.statusCode}");
-      print("Booking Response Body: ${response.body}");
-
-      if (response.statusCode == 200) {
-        Map<String, dynamic> data = jsonDecode(response.body);
-
-        return BookingResponse.fromJson(data);
-      } else {
-        throw Exception("Failed to load requests: ${response.body}");
-      }
-    } catch (e) {
-      print("Error in getAllRequests: $e");
-      throw Exception("Error occurred: $e");
     }
+  } catch (e) {
+    print("Error in getAllRequests: $e");
+    return BookingResponse(
+        status: false,
+        count: 0,
+        bookings: []
+    );
   }
+}

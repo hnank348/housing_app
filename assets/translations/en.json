@@ -9,6 +9,7 @@
   "Agreed": "Agreed",
   "An error occurred during booking. Please try again.": "An error occurred during booking. Please try again.",
   "Apartment not found": "Apartment not found",
+  "Apartment": "Apartment",
   "Approved": "Approved",
   "Are you sure about deleting this apartment?": "Are you sure about deleting this apartment?",
   "Are you sure you want to approve this request?": "Are you sure you want to approve this request?",
@@ -81,7 +82,7 @@
   "Please select end date": "Please select end date",
   "Please select start date": "Please select start date",
   "Please wait for admin approval to activate your account": "Please wait for admin approval to activate your account",
-  "Price / month": "Price / month",
+  "Price / Day": "Price / Day",
   "Price:": "Price:",
   "Profile": "Profile",
   "Real state ID": "Real state ID",
@@ -97,6 +98,7 @@
   "Removed to favorite": "Removed to favorite",
   "Reviews": "Reviews",
   "Rooms": "Rooms",
+  "Refresh": "Refresh",
   "SIGN UP": "SIGN UP",
   "SYP": "SYP",
   "Save": "Save",
@@ -138,5 +140,11 @@
   "required": "required",
   "search": "search",
   "to": "to",
-  "update booking": "update booking"
+  "update booking": "update booking",
+  "No requests found": "No requests found",
+  "You don\\'t have any booking requests yet": "You don\\'t have any booking requests yet",
+  "Booking Rejected": "Booking Rejected",
+  "Sorry, your booking request has been rejected.": "Sorry, your booking request has been rejected.",
+  "Booking Approved": "Booking Approved",
+  "Your booking request has been successfully approved.": "Your booking request has been successfully approved."
 }

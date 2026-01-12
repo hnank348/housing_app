@@ -16,7 +16,7 @@ import 'data/api/authe/show_api.dart';
 import 'view/HomePage/home_screen.dart';
 import 'model/auth_model.dart';
 
-// 1. تعريف القناة عالية الأهمية
+// تعريف القناة للإشعارات (تعمل على أندرويد فقط)
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
   'high_importance_channel',
   'High Importance Notifications',
@@ -36,21 +36,20 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
 
+  // تهيئة Firebase - تعمل على الديسكتوب إذا تم إعداد المشروع في Firebase Console
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
+  // منطق الإشعارات - يتم تفعيله فقط على الأندرويد والـ iOS
   if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
-    // جلب التوكن
     String? token = await FirebaseMessaging.instance.getToken();
     print("FCM Token: $token");
 
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-    // إنشاء القناة
     await flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(channel);
 
-    // تهيئة الإشعارات المحلية (ضرورية جداً لعرض الإشعار)
     const AndroidInitializationSettings initializationSettingsAndroid =
     AndroidInitializationSettings('@mipmap/ic_launcher');
     const InitializationSettings initializationSettings =
@@ -69,13 +68,8 @@ void main() async {
       sound: true,
     );
 
-    // الاستماع للإشعارات
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print("تم استلام إشعار الآن!");
-
       RemoteNotification? notification = message.notification;
-      AndroidNotification? android = message.notification?.android;
-
       if (notification != null) {
         flutterLocalNotificationsPlugin.show(
           notification.hashCode,
@@ -127,6 +121,8 @@ class HousingApp extends StatelessWidget {
             useMaterial3: true,
             brightness: Brightness.light,
             scaffoldBackgroundColor: Colors.white,
+            // تحديد الخط ليكون متناسقاً على الديسكتوب
+            fontFamily: 'Cairo',
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
                 backgroundColor: const Color(0xff2D5C7A),
@@ -143,7 +139,7 @@ class HousingApp extends StatelessWidget {
           darkTheme: ThemeData(
             useMaterial3: true,
             brightness: Brightness.dark,
-            scaffoldBackgroundColor: const Color(0xff121111FF),
+            scaffoldBackgroundColor: const Color(0xff121111),
             appBarTheme: const AppBarTheme(
               backgroundColor: Colors.black,
               foregroundColor: Colors.white,
@@ -153,7 +149,7 @@ class HousingApp extends StatelessWidget {
           home: WelcomPage(),
           routes: {
             '/home': (context) => const HomeScreen(),
-            '/reserve': (context) => MyBookingsScreen(),
+            '/reserve': (context) =>  MyBookingsScreen(),
             '/add': (context) => const AddApartmentPage(),
             '/favorite': (context) => const FavoriteApartment(),
             '/profile': (context) => FutureBuilder<UserResponse>(

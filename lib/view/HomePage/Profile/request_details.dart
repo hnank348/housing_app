@@ -99,7 +99,7 @@ class RequestDetails extends StatelessWidget {
                   fontFamily: 'PurplePurse',
                 ),),
                 SizedBox(height: 10,),
-                Text('${'Price / month'.tr()} : ${booking.totalPrice}', style: const TextStyle(
+                Text('${'Price / Day'.tr()} : ${booking.totalPrice}', style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   fontFamily: 'PurplePurse',

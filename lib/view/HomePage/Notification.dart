@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import '../../data/api/notification/notification_api.dart'; // تأكدي من المسار الصحيح
-import '../../model/notification_model.dart';           // تأكدي من المسار الصحيح
+import '../../data/api/notification/notification_api.dart';
+import '../../model/notification_model.dart';
 
 class Esharscreen extends StatefulWidget {
   const Esharscreen({super.key});
@@ -16,11 +16,9 @@ class _EsharscreenState extends State<Esharscreen> {
   @override
   void initState() {
     super.initState();
-    // تهيئة جلب البيانات عند تشغيل الصفحة أول مرة
     _notificationsFuture = getNotifications();
   }
 
-  // دالة لتحديث البيانات يدوياً
   void _refreshNotifications() {
     setState(() {
       _notificationsFuture = getNotifications();
@@ -30,7 +28,7 @@ class _EsharscreenState extends State<Esharscreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100], // خلفية رمادية فاتحة لتمييز الكروت
+      backgroundColor: Colors.grey[100],
       appBar: AppBar(
         centerTitle: true,
         elevation: 2,
@@ -44,15 +42,14 @@ class _EsharscreenState extends State<Esharscreen> {
         ).tr(),
         actions: [
           IconButton(
-            onPressed: _refreshNotifications, // زر لتحديث القائمة
+            onPressed: _refreshNotifications,
             icon: const Icon(Icons.refresh, color: Colors.white),
           ),
-          IconButton(
-            onPressed: () {
-              // يمكنكِ هنا إضافة كود حذف جميع الإشعارات
-            },
-            icon: const Icon(Icons.delete_outline, size: 25, color: Colors.white),
-          ),
+          // IconButton(
+          //   onPressed: () {
+          //   },
+          //   icon: const Icon(Icons.delete_outline, size: 25, color: Colors.white),
+          // ),
         ],
         backgroundColor: const Color(0xff073D5F),
       ),
@@ -103,11 +100,10 @@ class _EsharscreenState extends State<Esharscreen> {
                 return eshareItem(
                   title: item.title,
                   message: item.message,
-                  // تم اعتبار is_read == 1 يعني مقروء
                   isRead: item.isRead == 1,
                   icon: item.title.contains('Approved') ? Icons.check_circle : Icons.notifications,
                   color: item.title.contains('Approved') ? Colors.green : const Color(0xff073D5F),
-                  time: item.createdAt, // يمكنكِ تمرير الوقت من الـ Model
+                  time: item.createdAt,
                 );
               },
             );
@@ -175,7 +171,6 @@ class _EsharscreenState extends State<Esharscreen> {
             title,
             style: TextStyle(
               fontSize: 17,
-              // خط عريض للإشعار غير المقروء
               fontWeight: isRead ? FontWeight.w500 : FontWeight.bold,
               color: const Color(0xff073D5F),
             ),

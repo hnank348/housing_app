@@ -5,6 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:housing_app/firebase_options.dart';
 import 'package:housing_app/view/HomePage/Apartment/add_Apartement.dart';
 import 'package:housing_app/view/HomePage/Favorite/favorite_apartment.dart';
@@ -16,7 +17,6 @@ import 'data/api/authe/show_api.dart';
 import 'view/HomePage/home_screen.dart';
 import 'model/auth_model.dart';
 
-// تعريف القناة للإشعارات (تعمل على أندرويد فقط)
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
   'high_importance_channel',
   'High Importance Notifications',
@@ -25,8 +25,7 @@ const AndroidNotificationChannel channel = AndroidNotificationChannel(
   playSound: true,
 );
 
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-FlutterLocalNotificationsPlugin();
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
@@ -36,37 +35,26 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
 
-  // تهيئة Firebase - تعمل على الديسكتوب إذا تم إعداد المشروع في Firebase Console
+  final prefs = await SharedPreferences.getInstance();
+  bool savedTheme = prefs.getBool('isDarkMode') ?? false;
+  HousingApp.isDarkMode.value = savedTheme;
+
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // منطق الإشعارات - يتم تفعيله فقط على الأندرويد والـ iOS
   if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
     String? token = await FirebaseMessaging.instance.getToken();
     print("FCM Token: $token");
-
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
     await flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(channel);
 
-    const AndroidInitializationSettings initializationSettingsAndroid =
-    AndroidInitializationSettings('@mipmap/ic_launcher');
-    const InitializationSettings initializationSettings =
-    InitializationSettings(android: initializationSettingsAndroid);
+    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const InitializationSettings initializationSettings = InitializationSettings(android: initializationSettingsAndroid);
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
-    await FirebaseMessaging.instance.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
-
-    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
+    await FirebaseMessaging.instance.requestPermission(alert: true, badge: true, sound: true);
+    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(alert: true, badge: true, sound: true);
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       RemoteNotification? notification = message.notification;
@@ -77,12 +65,8 @@ void main() async {
           notification.body,
           NotificationDetails(
             android: AndroidNotificationDetails(
-              channel.id,
-              channel.name,
-              channelDescription: channel.description,
-              importance: Importance.max,
-              priority: Priority.high,
-              icon: '@mipmap/ic_launcher',
+              channel.id, channel.name, channelDescription: channel.description,
+              importance: Importance.max, priority: Priority.high, icon: '@mipmap/ic_launcher',
             ),
           ),
         );
@@ -102,9 +86,15 @@ void main() async {
 }
 
 class HousingApp extends StatelessWidget {
-  HousingApp({super.key});
+  const HousingApp({super.key});
 
   static ValueNotifier<bool> isDarkMode = ValueNotifier<bool>(false);
+
+  static Future<void> toggleTheme(bool value) async {
+    isDarkMode.value = value;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isDarkMode', value);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +111,6 @@ class HousingApp extends StatelessWidget {
             useMaterial3: true,
             brightness: Brightness.light,
             scaffoldBackgroundColor: Colors.white,
-            // تحديد الخط ليكون متناسقاً على الديسكتوب
             fontFamily: 'Cairo',
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
@@ -149,7 +138,7 @@ class HousingApp extends StatelessWidget {
           home: WelcomPage(),
           routes: {
             '/home': (context) => const HomeScreen(),
-            '/reserve': (context) =>  MyBookingsScreen(),
+            '/reserve': (context) => MyBookingsScreen(),
             '/add': (context) => const AddApartmentPage(),
             '/favorite': (context) => const FavoriteApartment(),
             '/profile': (context) => FutureBuilder<UserResponse>(
@@ -159,9 +148,7 @@ class HousingApp extends StatelessWidget {
                   return const Scaffold(body: Center(child: CircularProgressIndicator()));
                 }
                 if (snapshot.hasError || !snapshot.hasData || snapshot.data!.user == null) {
-                  return Scaffold(
-                    body: Center(child: Text("Error: ${snapshot.error}")),
-                  );
+                  return Scaffold(body: Center(child: Text("Error: ${snapshot.error}")));
                 }
                 return ProfilePage(user: snapshot.data!.user!);
               },

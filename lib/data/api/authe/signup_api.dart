@@ -18,7 +18,7 @@ Future signUp(
     String pass,
     File idImage,
     ) async {
- String url=ConstantApi.signup;
+  String url = ConstantApi.signup;
   var headers = {'Accept': 'application/json'};
   var request = http.MultipartRequest(
     'POST',
@@ -36,13 +36,10 @@ Future signUp(
     });
 
     request.files.add(await http.MultipartFile.fromPath('profile_image', prImage.path));
-    request.files.add(
-      await http.MultipartFile.fromPath('id_image', idImage.path),
-    );
+    request.files.add(await http.MultipartFile.fromPath('id_image', idImage.path));
     request.headers.addAll(headers);
 
     var responseStream = await request.send();
-
     var response = await http.Response.fromStream(responseStream);
 
     print(response.statusCode);
@@ -55,72 +52,108 @@ Future signUp(
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setInt('userId', userId);
 
-      print("User ID saved: $userId");
-      showDialog (
+      if (!context.mounted) return;
+
+      showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (_) => AlertDialog(
-          title: Text('Account created').tr(),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context){return LoginScreen();}));
-              },
-              child: Text('Agreed').tr(),
+        builder: (ctx) {
+          final isDark = Theme.of(ctx).brightness == Brightness.dark;
+          return AlertDialog(
+            backgroundColor: Theme.of(ctx).dialogBackgroundColor,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            title: Text(
+              'Account created'.tr(),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'Cairo',
+                fontWeight: FontWeight.bold,
+                color: isDark ? Colors.white : Colors.black,
+              ),
             ),
-          ],
-          content: Column(
-            children: [
-              Text(
-                'Your request has been successfully submitted.'.tr()),
-              Text('Please wait for admin approval to activate your account'.tr(),),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.check_circle_outline, color: Colors.green, size: 60),
+                const SizedBox(height: 16),
+                Text(
+                  '${'Account created successfully.'.tr()}\n'
+                      '${'Please wait for admin approval to activate your account'.tr()}',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 15,
+                    height: 1.5,
+                    fontFamily: 'Cairo',
+                    color: isDark ? Colors.grey[300] : Colors.grey[800],
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              Center(
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (_) =>  LoginScreen()),
+                          (route) => false,
+                    );
+                  },
+                  child: Text(
+                    'Agreed'.tr(),
+                    style: const TextStyle(
+                      fontFamily: 'Cairo',
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+              ),
             ],
-          ),
-        ),
-
-
+          );
+        },
       );
     } else {
-      print('sorry ${response.statusCode}');
-
-      String errorMessage = 'Registration failed. Please try again.';
+      String errorMessage = 'Registration failed. Please try again.'.tr();
       try {
         final jsonBody = jsonDecode(response.body);
-        if (jsonBody.containsKey('error') && jsonBody['error'] is String) {
-          errorMessage = jsonBody['error'];
-        } else if (jsonBody.containsKey('message') && jsonBody['message'] is String) {
-          errorMessage = jsonBody['message'];
-        }
+        if (jsonBody.containsKey('error')) errorMessage = jsonBody['error'];
+        else if (jsonBody.containsKey('message')) errorMessage = jsonBody['message'];
       } catch (e) {
-        print('Error parsing response body: $e');
-        errorMessage = 'Registration failed with status code ${response.statusCode}';
+        errorMessage = '${'error'.tr()}: ${response.statusCode}';
       }
 
       showDialog(
         context: context,
-        builder: (_) => AlertDialog(
-          title: Text('Registration Error'),
-          content: Text(errorMessage),
+        builder: (ctx) => AlertDialog(
+          backgroundColor: Theme.of(ctx).dialogBackgroundColor,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: Text('Registration Error'.tr(), style: const TextStyle(fontFamily: 'Cairo')),
+          content: Text(errorMessage, style: const TextStyle(fontFamily: 'Cairo')),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('Close'),
+              onPressed: () => Navigator.pop(ctx),
+              child: Text('Close'.tr(), style: const TextStyle(fontFamily: 'Cairo')),
             ),
           ],
         ),
       );
     }
   } catch (e) {
-    print('An error occurred: $e');
     showDialog(
       context: context,
-      builder: (_) => AlertDialog(
-        title: Text('error').tr(),
-        content: Text('The connection to the server failed. Check your internet connection.').tr(),
+      builder: (ctx) => AlertDialog(
+        backgroundColor: Theme.of(ctx).dialogBackgroundColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text('error'.tr(), style: const TextStyle(fontFamily: 'Cairo')),
+        content: Text(
+          'The connection to the server failed. Check your internet connection.'.tr(),
+          style: const TextStyle(fontFamily: 'Cairo'),
+        ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Ok').tr(),
+            onPressed: () => Navigator.pop(ctx),
+            child: Text('Ok'.tr(), style: const TextStyle(fontFamily: 'Cairo')),
           ),
         ],
       ),

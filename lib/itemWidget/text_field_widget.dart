@@ -19,13 +19,18 @@ class TextFieldWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       child: TextFormField(
         controller: controller,
         maxLines: maxLines,
         keyboardType: isNum ? TextInputType.number : TextInputType.text,
-        style: const TextStyle(color: Colors.black87, fontSize: 16),
+        style: TextStyle(
+            color: isDark ? Colors.white : Colors.black87,
+            fontSize: 16
+        ),
         decoration: InputDecoration(
           prefixIcon: Icon(icon, color: const Color(0xff2D5C7A), size: 22),
           labelText: label,
@@ -33,7 +38,7 @@ class TextFieldWidget extends StatelessWidget {
           floatingLabelStyle: const TextStyle(color: Color(0xff2D5C7A)),
 
           filled: true,
-          fillColor: const Color(0xFFF1F4F8),
+          fillColor: isDark ? const Color(0xFF1E1E1E) : const Color(0xFFF1F4F8),
 
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),

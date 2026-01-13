@@ -33,7 +33,7 @@ Future<String> ApprovedRequests(int bookingId, int userId) async {
           message: "Your booking request has been successfully approved.".tr()
       );
 
-      return data['message'] ?? "Approved successfully";
+      return data['message'] ?? "Approved successfully".tr();
     } else {
       return data['message'] ?? "Error: ${response.statusCode}";
     }

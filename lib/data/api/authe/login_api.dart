@@ -24,21 +24,6 @@ Future login(BuildContext context, String mobil, String pass) async {
 
       String? token = js['token'];
 
-      var userData = js['admin'] ?? js['client'];
-
-      if (userData != null) {
-        String currentStatus = userData['status'].toString().trim().toLowerCase();
-
-        print("Detected Status: '$currentStatus'");
-
-        if (currentStatus != 'approved') {
-          _showErrorDialog(context, 'حسابك بانتظار موافقة الإدارة');
-          return;
-        }
-      } else {
-        print("Error: Could not find user/client object in response");
-      }
-
       final prefs = await SharedPreferences.getInstance();
       if (token != null) await prefs.setString('userToken', token);
 
@@ -47,7 +32,7 @@ Future login(BuildContext context, String mobil, String pass) async {
         MaterialPageRoute(builder: (_) => HomeScreen()),
       );
     } else if (response.statusCode == 401) {
-      _showErrorDialog(context, 'Incorrect phone number or password'.tr());
+      ErrorDialog(context, 'Incorrect phone number or password'.tr());
     } else {
       print('Error ${response.statusCode}');
     }
@@ -57,7 +42,7 @@ Future login(BuildContext context, String mobil, String pass) async {
   }
 }
 
-void _showErrorDialog(BuildContext context, String message) {
+void ErrorDialog(BuildContext context, String message) {
   showDialog(
     context: context,
     builder: (_) => AlertDialog(

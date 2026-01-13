@@ -1,5 +1,6 @@
 
 import 'dart:convert';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -9,20 +10,17 @@ import '../../../model/booking_model.dart';
 class ApiService {
   static const String _baseUrl = ConstantApi.baseUrl;
   
-  // دالة للحصول على التوكن من SharedPreferences
   static Future<String?> _getToken() async {
     final prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('userToken');
     return (token == null || token.isEmpty) ? null : token;
   }
 
-  // دالة لحفظ التوكن في SharedPreferences
   static Future<void> saveToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('userToken', token);
   }
 
-  // دالة لحذف التوكن (لتسجيل الخروج)
   static Future<void> clearToken() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('userToken');
@@ -31,7 +29,7 @@ class ApiService {
   static Future<Map<String, dynamic>> fetchBookings() async {
     final token = await _getToken();
     if (token == null || token.isEmpty) {
-      return {'success': false, 'error': 'يرجى تسجيل الدخول مجدداً'};
+      return {'success': false, 'error': 'Please login again'.tr()};
     }
 
     try {
@@ -78,16 +76,15 @@ print('All my booking::::${response.statusCode}');
       print('Exception: $e');
       return {
         'success': false,
-        'error': 'حدث خطأ: $e',
+        'error': '${'An error occurred'.tr()} $e',
       };
     }
   }
 
-  // إلغاء الحجز
   static Future<Map<String, dynamic>> cancelBooking(int bookingId) async {
     final token = await _getToken();
     if (token == null) {
-      throw Exception('لم يتم العثور على التوكن');
+      throw Exception('Authentication token not found'.tr());
     }
 
     try {
@@ -103,36 +100,35 @@ print('All my booking::::${response.statusCode}');
         print('Response: ${response.body}');
         return {
           'success': true,
-          'message': 'تم إلغاء الحجز بنجاح',
+          'message': 'Booking canceled successfully'.tr(),
         };
       } else if (response.statusCode == 403) {
         print('Response: ${response.body}');
         return {
           'success': false,
-          'error': 'ليس لديك صلاحية لإلغاء هذا الحجز',
+          'error': 'You do not have permission to cancel this booking'.tr(),
         };
       } else if (response.statusCode == 404) {
         print('Response: ${response.body}');
         return {
           'success': false,
-          'error': 'الحجز غير موجود',
+          'error': 'Booking not found'.tr(),
         };
       } else {
         print('Response: ${response.body}');
         return {
           'success': false,
-          'error': 'حدث خطأ في الإلغاء',
+          'error': 'An error occurred during cancellation'.tr(),
         };
       }
     } catch (e) {
       return {
         'success': false,
-        'error': 'تعذر الاتصال بالخادم',
+        'error': 'Server connection failed check your internet'.tr(),
       };
     }
   }
 
-  // تحديث الحجز
   static Future<Map<String, dynamic>> updateBooking(
     int bookingId,
     String startDate,
@@ -140,7 +136,7 @@ print('All my booking::::${response.statusCode}');
   ) async {
     final token = await _getToken();
     if (token == null) {
-      throw Exception('لم يتم العثور على التوكن');
+      throw Exception('Authentication token not found'.tr());
     }
 
     try {
@@ -160,23 +156,22 @@ print('All my booking::::${response.statusCode}');
         print('Response: ${response.body}');
         return {
           'success': true,
-          'message': 'تم تحديث الحجز بنجاح',
+          'message': 'Booking updated successfully'.tr(),
         };
       } else {
         print('Response: ${response.body}');
         return {
           'success': false,
-          'error': 'حدث خطأ في تحديث الحجز',
+          'error': 'Error updating booking'.tr(),
         };
       }
     } catch (e) {
       return {
         'success': false,
-        'error': 'تعذر الاتصال بالخادم',
+        'error': 'Server connection failed check your internet'.tr(),
       };
     }
   }
-// إرسال تقييم
   static Future<Map<String, dynamic>> submitReview(
       int bookingId,
       int rating,
@@ -184,7 +179,7 @@ print('All my booking::::${response.statusCode}');
       ) async {
     final token = await _getToken();
     if (token == null) {
-      throw Exception('لم يتم العثور على التوكن');
+      throw Exception('Authentication token not found'.tr());
     }
 
     try {
@@ -198,32 +193,30 @@ print('All my booking::::${response.statusCode}');
         body: json.encode({
           'booking_id': bookingId,
           'rating': rating,
-          'comment': review, // تم التغيير من 'review' إلى 'comment'
+          'comment': review,
         }),
       );
 
-      // فك تشفير استجابة السيرفر لمعرفة الخطأ الحقيقي إن وجد
       final responseData = json.decode(response.body);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         print('Response Success: ${response.body}');
         return {
           'success': true,
-          'message': responseData['message'] ?? 'تم إرسال التقييم بنجاح',
+          'message': responseData['message'] ?? 'The evaluation was successfully submitted'.tr(),
         };
       } else {
         print('Response Error: ${response.body}');
         return {
           'success': false,
-          // عرض رسالة الخطأ القادمة من السيرفر بدلاً من رسالة ثابتة
-          'error': responseData['message'] ?? 'حدث خطأ في إرسال التقييم',
+          'error': responseData['message'] ?? 'You have already appraised the real state'.tr(),
         };
       }
     } catch (e) {
       print('Catch Error: $e');
       return {
         'success': false,
-        'error': 'تعذر الاتصال بالخادم',
+        'error': 'Server connection failed check your internet'.tr(),
       };
     }
   }}

@@ -135,26 +135,26 @@ class _RealEstateAppState extends State<RealEstateApp> {
                     location: "${widget.apartment.governorate} - ${widget.apartment.city}",
                     rating: averageRating,
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20),
                   DescriptionHouse(description: widget.apartment.description),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20),
                   BedRooms(
                     bedrooms: widget.apartment.rooms,
                     bathrooms: widget.apartment.bathrooms,
                     area: widget.apartment.area,
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10),
                   LocationDetails(
                     address: widget.apartment.address,
                     price: widget.apartment.pricePerDay,
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20),
                   Profile(name: 'Real state office'.tr(), type: 'owner'.tr(), stars: 4),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20),
                   isLoadingRatings
                       ? const Center(child: CircularProgressIndicator())
                       : CommentsSection(ratings: ratingsList, average: averageRating),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20),
                   Button(
                     text: 'Book Now'.tr(),
                     color: const Color(0xff2D5C7A),

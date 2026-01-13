@@ -19,7 +19,7 @@ class _SettingPageState extends State<SettingPage> {
     )!.supportedLocales;
 
     Locale valueLocale = supportedLocales.firstWhere(
-      (l) => l.languageCode == context.locale.languageCode &&
+          (l) => l.languageCode == context.locale.languageCode &&
           (l.countryCode == context.locale.countryCode ||
               l.countryCode == null ||
               context.locale.countryCode == null),
@@ -56,7 +56,7 @@ class _SettingPageState extends State<SettingPage> {
                 value: HousingApp.isDarkMode.value,
                 onChanged: (value) {
                   setState(() {
-                    HousingApp.isDarkMode.value = value;
+                    HousingApp.toggleTheme(value);
                   });
                 },
               ),
@@ -83,7 +83,7 @@ class _SettingPageState extends State<SettingPage> {
                   else if (local.languageCode == 'ar') {
                     label = 'العربية';
                   }
-                  else 
+                  else
                   {
                     label = local.toString();
                   }

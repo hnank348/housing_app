@@ -23,7 +23,7 @@ class _SignupScreenState extends State<SignupScreen> {
   List<bool> isSelected = [true, false];
   String genderValue = 'male';
 
-  DateTime date=DateTime.now();
+  DateTime date = DateTime.now();
 
   Future<void> idImage() async {
     final picker = ImagePicker();
@@ -51,16 +51,17 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(height: 20),
-
+                const SizedBox(height: 20),
                 Stack(
                   children: [
                     GestureDetector(
@@ -76,15 +77,13 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                       ),
                     ),
-                    // إخفاء الأيقونة إذا تم اختيار صورة، أو تركها دائماً (حسب رغبتك)
-                    // هنا قمت بوضعها لتظهر في الزاوية اليمنى السفلية
                     Positioned(
                       bottom: 5,
                       right: 5,
                       child: Container(
                         padding: const EdgeInsets.all(5),
                         decoration: const BoxDecoration(
-                          color: Color(0xff2D5C7A), // لون خلفية الأيقونة
+                          color: Color(0xff2D5C7A),
                           shape: BoxShape.circle,
                         ),
                         child: const Icon(
@@ -96,29 +95,28 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                   ],
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 TextFieldItem(
                   hinit: 'First Name'.tr(),
-                  color: Color(0xff2D5C7A),
+                  color: const Color(0xff2D5C7A),
                   hiding: false,
-                  icon: Icon(Icons.person),
+                  icon: const Icon(Icons.person),
                   colorIcon: Colors.white,
                   controller: adminFirstNameController,
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextFieldItem(
                   hinit: 'Last Name'.tr(),
-                  color: Color(0xff2D5C7A),
+                  color: const Color(0xff2D5C7A),
                   hiding: false,
-                  icon: Icon(Icons.person),
+                  icon: const Icon(Icons.person),
                   colorIcon: Colors.white,
                   controller: adminLastNameController,
                 ),
-                SizedBox(height: 10),
-
+                const SizedBox(height: 10),
                 TextFieldItem(
                   hinit: 'Birth Date'.tr(),
-                  color: Color(0xff2D5C7A),
+                  color: const Color(0xff2D5C7A),
                   hiding: false,
                   controller: adminBirthDateController,
                   iconButton: IconButton(
@@ -128,58 +126,50 @@ class _SignupScreenState extends State<SignupScreen> {
                         firstDate: DateTime(1950),
                         lastDate: DateTime(2100),
                         initialDate: date,
+                        builder: (context, child) {
+                          return Theme(
+                            data: isDark ? ThemeData.dark() : ThemeData.light(),
+                            child: child!,
+                          );
+                        },
                       );
 
                       if (newDate == null) return;
 
                       setState(() {
                         date = newDate;
-
                         String formattedDate =
                             '${newDate.year}-${newDate.month.toString().padLeft(2, '0')}-${newDate.day.toString().padLeft(2, '0')}';
-
                         adminBirthDateController.text = formattedDate;
                       });
                     },
-                    icon: Icon(Icons.date_range),
+                    icon: const Icon(Icons.date_range),
                   ),
                   colorIcon: Colors.white,
                 ),
-
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextFieldItem(
                   hinit: 'Phone Number'.tr(),
-                  color: Color(0xff2D5C7A),
+                  color: const Color(0xff2D5C7A),
                   hiding: false,
-                  icon: Icon(Icons.phone),
+                  icon: const Icon(Icons.phone),
                   colorIcon: Colors.white,
                   controller: adminPhoneController,
                   textInputType: TextInputType.number,
                 ),
-                // SizedBox(height: 10),
-                // TextFieldItem(
-                //   hinit: 'Confirm Phone Number'.tr(),
-                //   color: Color(0xff2D5C7A),
-                //   hiding: false,
-                //   icon: Icon(Icons.phone),
-                //   colorIcon: Colors.white,
-                //   controller: adminConfirmPhoneController,
-                //   textInputType: TextInputType.number,
-                // ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextFieldItem(
                   hinit: 'Password'.tr(),
-                  color: Color(0xff2D5C7A),
+                  color: const Color(0xff2D5C7A),
                   hiding: true,
-                  icon: Icon(Icons.key),
+                  icon: const Icon(Icons.key),
                   colorIcon: Colors.white,
                   controller: adminPasswordController,
                 ),
-                SizedBox(height: 10),
-
+                const SizedBox(height: 10),
                 TextFieldItem(
                   hinit: 'Id Image'.tr(),
-                  color: Color(0xff2D5C7A),
+                  color: const Color(0xff2D5C7A),
                   hiding: false,
                   controller: adminIdImageController,
                   iconButton: IconButton(
@@ -188,21 +178,18 @@ class _SignupScreenState extends State<SignupScreen> {
                         idImage();
                       });
                     },
-                    icon: Icon(Icons.card_membership),
+                    icon: const Icon(Icons.card_membership),
                   ),
                   colorIcon: Colors.white,
                 ),
-                SizedBox(height: 10),
-
+                const SizedBox(height: 10),
                 SizedBox(
                   height: 50,
-
                   child: ToggleButtons(
                     verticalDirection: VerticalDirection.down,
-
-                    color: Color(0xff2D5C7A),
-                    borderColor: Color(0xff2D5C7A),
-                    fillColor: Color.fromARGB(255, 70, 142, 186),
+                    color: const Color(0xff2D5C7A),
+                    borderColor: const Color(0xff2D5C7A),
+                    fillColor: isDark ? const Color(0xff3e7a9e) : const Color.fromARGB(255, 70, 142, 186),
                     borderRadius: BorderRadius.circular(10),
                     isSelected: isSelected,
                     onPressed: (index) {
@@ -210,7 +197,6 @@ class _SignupScreenState extends State<SignupScreen> {
                         for (int i = 0; i < isSelected.length; i++) {
                           isSelected[i] = i == index;
                         }
-
                         if (index == 0) {
                           genderValue = 'male';
                         } else {
@@ -223,27 +209,25 @@ class _SignupScreenState extends State<SignupScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Text(
                           "          Male         ".tr(),
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(color: isDark ? Colors.white : Colors.black),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Text(
                           "         Female         ".tr(),
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(color: isDark ? Colors.white : Colors.black),
                         ),
                       ),
                     ],
                   ),
                 ),
-
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Button(
                   text: 'Sign Up'.tr(),
-                  color: Color(0xff2D5C7A),
+                  color: const Color(0xff2D5C7A),
                   colorText: Colors.white,
-                  onPressed: ()async {
-
+                  onPressed: () async {
                     await signUp(
                       context,
                       genderValue,
@@ -263,8 +247,6 @@ class _SignupScreenState extends State<SignupScreen> {
                     Variables.idImage1 = adminIdImageController.text;
                   },
                 ),
-
-
               ],
             ),
           ),

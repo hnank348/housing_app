@@ -3,36 +3,38 @@ import 'package:flutter/material.dart';
 import '../../data/api/notification/notification_api.dart';
 import '../../model/notification_model.dart';
 
-class Esharscreen extends StatefulWidget {
-  const Esharscreen({super.key});
+class NotificationPage extends StatefulWidget {
+  const NotificationPage({super.key});
 
   @override
-  State<Esharscreen> createState() => _EsharscreenState();
+  State<NotificationPage> createState() => NotificationPageState();
 }
 
-class _EsharscreenState extends State<Esharscreen> {
-  late Future<List<NotificationModel>> _notificationsFuture;
+class NotificationPageState extends State<NotificationPage> {
+  late Future<List<NotificationModel>> notifications;
 
   @override
   void initState() {
     super.initState();
-    _notificationsFuture = getNotifications();
+    notifications = getNotifications();
   }
 
-  void _refreshNotifications() {
+  void refreshNotifications() {
     setState(() {
-      _notificationsFuture = getNotifications();
+      notifications = getNotifications();
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: isDark ? Theme.of(context).scaffoldBackgroundColor : Colors.grey[100],
       appBar: AppBar(
         centerTitle: true,
         elevation: 2,
-        title: Text(
+        title: const Text(
           'Notifications',
           style: TextStyle(
             fontSize: 22,
@@ -42,23 +44,18 @@ class _EsharscreenState extends State<Esharscreen> {
         ).tr(),
         actions: [
           IconButton(
-            onPressed: _refreshNotifications,
+            onPressed: refreshNotifications,
             icon: const Icon(Icons.refresh, color: Colors.white),
           ),
-          // IconButton(
-          //   onPressed: () {
-          //   },
-          //   icon: const Icon(Icons.delete_outline, size: 25, color: Colors.white),
-          // ),
         ],
-        backgroundColor: const Color(0xff073D5F),
+        backgroundColor:const Color(0xff2D5C7A),
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          _refreshNotifications();
+          refreshNotifications();
         },
         child: FutureBuilder<List<NotificationModel>>(
-          future: _notificationsFuture,
+          future: notifications,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -68,10 +65,10 @@ class _EsharscreenState extends State<Esharscreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Icon(Icons.error_outline, size: 50, color: Colors.red),
-                    const SizedBox(height: 10),
-                    Text("Error: ${snapshot.error}"),
+                     SizedBox(height: 10),
+                    Text("Error: ${snapshot.error}", style: TextStyle(color: isDark ? Colors.white : Colors.black)),
                     ElevatedButton(
-                      onPressed: _refreshNotifications,
+                      onPressed: refreshNotifications,
                       child: const Text("Retry"),
                     )
                   ],
@@ -82,9 +79,12 @@ class _EsharscreenState extends State<Esharscreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.notifications_off_outlined, size: 80, color: Colors.grey[400]),
-                    const SizedBox(height: 10),
-                    const Text("No notifications found").tr(),
+                    Icon(Icons.notifications_off_outlined, size: 80, color: isDark ? Colors.grey[600] : Colors.grey[400]),
+                    SizedBox(height: 10),
+                    Text(
+                      "No notifications found",
+                      style: TextStyle(color: isDark ? Colors.white70 : Colors.black54),
+                    ).tr(),
                   ],
                 ),
               );
@@ -97,13 +97,14 @@ class _EsharscreenState extends State<Esharscreen> {
               itemCount: notifications.length,
               itemBuilder: (context, index) {
                 final item = notifications[index];
-                return eshareItem(
+                return Item(
                   title: item.title,
                   message: item.message,
                   isRead: item.isRead == 1,
                   icon: item.title.contains('Approved') ? Icons.check_circle : Icons.notifications,
-                  color: item.title.contains('Approved') ? Colors.green : const Color(0xff073D5F),
+                  color: item.title.contains('Approved') ? Colors.green : (isDark ? const Color(0xff4690bd) : const Color(0xff073D5F)),
                   time: item.createdAt,
+                  isDark: isDark,
                 );
               },
             );
@@ -113,28 +114,32 @@ class _EsharscreenState extends State<Esharscreen> {
     );
   }
 
-  Widget eshareItem({
+  Widget Item({
     required String title,
     required String message,
     required IconData icon,
     required Color color,
     required bool isRead,
     required String time,
+    required bool isDark,
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 6.0),
       child: Container(
         decoration: BoxDecoration(
-          // الإشعار غير المقروء يظهر بخلفية زرقاء خفيفة جداً
-          color: isRead ? Colors.white : const Color(0xffE3F2FD),
+          color: isRead
+              ? (isDark ? const Color(0xff1E1E1E) : Colors.white)
+              : (isDark ? const Color(0xff0D212F) : const Color(0xffE3F2FD)),
           border: Border.all(
-            color: isRead ? Colors.grey.shade300 : const Color(0xff073D5F).withOpacity(0.3),
+            color: isRead
+                ? (isDark ? Colors.grey[800]! : Colors.grey.shade300)
+                : (isDark ? const Color(0xff4690bd) : const Color(0xff073D5F)).withOpacity(0.3),
             width: isRead ? 0.8 : 1.5,
           ),
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.03),
+              color: Colors.black.withOpacity(isDark ? 0.2 : 0.03),
               blurRadius: 5,
               offset: const Offset(0, 2),
             )
@@ -149,14 +154,14 @@ class _EsharscreenState extends State<Esharscreen> {
                 backgroundColor: color.withOpacity(0.1),
                 child: Icon(icon, color: color, size: 28),
               ),
-              if (!isRead) // نقطة حمراء للإشعارات الجديدة
+              if (!isRead)
                 Positioned(
                   right: 0,
                   top: 0,
                   child: Container(
                     padding: const EdgeInsets.all(2),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: isDark ? const Color(0xff1E1E1E) : Colors.white,
                       shape: BoxShape.circle,
                     ),
                     child: const CircleAvatar(
@@ -172,31 +177,29 @@ class _EsharscreenState extends State<Esharscreen> {
             style: TextStyle(
               fontSize: 17,
               fontWeight: isRead ? FontWeight.w500 : FontWeight.bold,
-              color: const Color(0xff073D5F),
+              color: isDark ? const Color(0xff4690bd) : const Color(0xff073D5F),
             ),
           ),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 5),
+              SizedBox(height: 5),
               Text(
                 message,
                 style: TextStyle(
                   fontSize: 14,
-                  color: isRead ? Colors.black54 : Colors.black87,
+                  color: isDark ? (isRead ? Colors.white70 : Colors.white) : (isRead ? Colors.black54 : Colors.black87),
                   height: 1.3,
                 ),
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8),
               Text(
                 time.split('T')[0],
-                style: TextStyle(fontSize: 11, color: Colors.grey[600]),
+                style: TextStyle(fontSize: 11, color: isDark ? Colors.grey[500] : Colors.grey[600]),
               ),
             ],
           ),
-          onTap: () {
-            // هنا يمكنكِ برمجة الانتقال لتفاصيل الحجز أو تحديث حالة الإشعار لمقروء
-          },
+          onTap: () {},
         ),
       ),
     );

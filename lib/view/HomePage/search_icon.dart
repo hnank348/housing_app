@@ -10,11 +10,10 @@ class SearchIcon extends StatefulWidget {
   const SearchIcon({super.key, required this.onSearchComplete});
 
   @override
-  State<SearchIcon> createState() => _SearchIconState();
+  State<SearchIcon> createState() => SearchIconState();
 }
 
-class _SearchIconState extends State<SearchIcon> {
-  // الكنترولرز الخاصة بحقول البحث
+class SearchIconState extends State<SearchIcon> {
   final adminRoomController = TextEditingController();
   final adminCityController = TextEditingController();
   final adminAddressController = TextEditingController();
@@ -22,7 +21,7 @@ class _SearchIconState extends State<SearchIcon> {
   final adminAreaController = TextEditingController();
   final adminGovernorateController = TextEditingController();
 
-  bool _isLoading = false; // متغير لمتابعة حالة البحث
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -35,9 +34,8 @@ class _SearchIconState extends State<SearchIcon> {
     super.dispose();
   }
 
-  // دالة تنفيذ البحث
-  Future<void> _performSearch() async {
-    setState(() => _isLoading = true); // بدء التحميل
+  Future<void> performSearch() async {
+    setState(() => _isLoading = true);
 
     try {
       List<ApartmentModel> results = await searchApartments(
@@ -49,7 +47,7 @@ class _SearchIconState extends State<SearchIcon> {
         governorate: adminGovernorateController.text,
       );
 
-      widget.onSearchComplete(results); // إرسال النتائج للواجهة الرئيسية
+      widget.onSearchComplete(results);
     } catch (e) {
       debugPrint("Search Error: $e");
     } finally {
@@ -73,7 +71,7 @@ class _SearchIconState extends State<SearchIcon> {
                   child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)),
                 )
                     : IconButton(
-                  onPressed: _performSearch,
+                  onPressed: performSearch,
                   icon: const Icon(Icons.search),
                 ),
                 hintText: 'search'.tr(),
@@ -83,7 +81,7 @@ class _SearchIconState extends State<SearchIcon> {
                   borderRadius: BorderRadius.all(Radius.circular(16)),
                 ),
               ),
-              onSubmitted: (_) => _performSearch(),
+              onSubmitted: (_) => performSearch(),
             ),
           ),
           const SizedBox(width: 8),
@@ -93,7 +91,7 @@ class _SearchIconState extends State<SearchIcon> {
               borderRadius: BorderRadius.circular(12),
             ),
             child: IconButton(
-              onPressed: () => _showFilterDialog(context),
+              onPressed: () => showFilterDialog(context),
               icon: const Icon(Icons.tune, color: Colors.blue),
             ),
           )
@@ -102,7 +100,7 @@ class _SearchIconState extends State<SearchIcon> {
     );
   }
 
-  void _showFilterDialog(BuildContext context) {
+  void showFilterDialog(BuildContext context) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -137,20 +135,19 @@ class _SearchIconState extends State<SearchIcon> {
                 ),
                 const SizedBox(height: 20),
 
-                _buildFilterField(adminCityController, 'City'.tr(), Icons.location_city),
-                _buildFilterField(adminGovernorateController, 'Governorate'.tr(), Icons.map),
-                _buildFilterField(adminAddressController, 'address'.tr(), Icons.location_on),
-                _buildFilterField(adminRoomController, 'Number rooms'.tr(), Icons.bed, isNumber: true),
-                _buildFilterField(adminPriceController, 'Price / month'.tr(), Icons.attach_money, isNumber: true),
-                _buildFilterField(adminAreaController, 'Area'.tr(), Icons.square_foot, isNumber: true),
+                FilterField(adminCityController, 'City'.tr(), Icons.location_city),
+                FilterField(adminGovernorateController, 'Governorate'.tr(), Icons.map),
+                FilterField(adminAddressController, 'address'.tr(), Icons.location_on),
+                FilterField(adminRoomController, 'Number rooms'.tr(), Icons.bed, isNumber: true),
+                FilterField(adminPriceController, 'Price / month'.tr(), Icons.attach_money, isNumber: true),
+                FilterField(adminAreaController, 'Area'.tr(), Icons.square_foot, isNumber: true),
 
                 const SizedBox(height: 30),
                 Button(text: "Filtering".tr(), color: Color(0xff2D5C7A), colorText: Colors.white,
                     onPressed: () async {
                          Navigator.pop(context);
-                        await _performSearch();
+                        await performSearch();
                          },),
-
               ],
             ),
           ),
@@ -159,7 +156,7 @@ class _SearchIconState extends State<SearchIcon> {
     );
   }
 
-  Widget _buildFilterField(TextEditingController controller, String label, IconData icon, {bool isNumber = false}) {
+  Widget FilterField(TextEditingController controller, String label, IconData icon, {bool isNumber = false}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 15),
       child: TextField(

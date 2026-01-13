@@ -19,6 +19,8 @@ class Images extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     if (!isMulti) {
       return GestureDetector(
         onTap: onTap,
@@ -27,14 +29,17 @@ class Images extends StatelessWidget {
           height: 180,
           margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: isDark ? Colors.grey[900] : Colors.white,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.grey.shade300),
+            border: Border.all(color: isDark ? Colors.grey[800]! : Colors.grey.shade300),
             image: mainImage != null
                 ? DecorationImage(image: FileImage(mainImage!), fit: BoxFit.cover)
                 : null,
             boxShadow: [
-              BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10)
+              BoxShadow(
+                  color: isDark ? Colors.black.withOpacity(0.3) : Colors.black.withOpacity(0.05),
+                  blurRadius: 10
+              )
             ],
           ),
           child: mainImage == null
@@ -58,7 +63,7 @@ class Images extends StatelessWidget {
                 width: 90,
                 margin: const EdgeInsets.only(right: 10),
                 decoration: BoxDecoration(
-                  color: const Color(0xff2D5C7A).withOpacity(0.1),
+                  color: isDark ? const Color(0xff2D5C7A).withOpacity(0.2) : const Color(0xff2D5C7A).withOpacity(0.1),
                   borderRadius: BorderRadius.circular(15),
                   border: Border.all(color: const Color(0xff2D5C7A), width: 1),
                 ),
@@ -78,6 +83,7 @@ class Images extends StatelessWidget {
                     image: FileImage(multiImages![index]),
                     fit: BoxFit.cover,
                   ),
+                  border: isDark ? Border.all(color: Colors.grey[800]!, width: 1) : null,
                 ),
               ),
               Positioned(

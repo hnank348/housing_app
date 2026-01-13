@@ -33,7 +33,7 @@ Future<String> RejectRequests(int bookingId, int userId) async {
         message: "Sorry, your booking request has been rejected.".tr(),
       );
 
-      return data['message'] ?? "Rejected successfully";
+      return data['message'] ?? "Rejected successfully".tr();
 
     } else {
       return data['message'] ?? "Failed to reject: ${response.statusCode}";

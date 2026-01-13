@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:housing_app/model/auth_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,29 +9,34 @@ Future<UserResponse> getUserRequests() async {
   final prefs = await SharedPreferences.getInstance();
   final String token = prefs.getString('userToken') ?? '';
 
-  var url = Uri.parse(ConstantApi.show);
+  final url = Uri.parse(ConstantApi.show);
 
   try {
-    var response = await http.get(
+    final response = await http.get(
       url,
       headers: {
         'Accept': 'application/json',
+        'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
     );
 
     print("Booking Status Code: ${response.statusCode}");
-    print("Booking Response Body: ${response.body}");
+
+    final Map<String, dynamic> decodedData = jsonDecode(response.body);
 
     if (response.statusCode == 200) {
-      Map<String, dynamic> data = jsonDecode(response.body);
-
-      return UserResponse.fromJson(data);
-    } else {
-      throw Exception("Failed to load requests: ${response.statusCode}");
+      return UserResponse.fromJson(decodedData);
+    }
+    else if (response.statusCode == 403) {
+      throw Exception("Please wait for admin approval to activate your account".tr());
+    }
+    else {
+      String errorMessage = decodedData['message'] ?? "Unknown error occurred";
+      throw Exception("Error ${response.statusCode}: $errorMessage");
     }
   } catch (e) {
-    print("Error in getAllRequests: $e");
-    throw Exception("Error occurred: $e");
+    print("Error in getUserRequests: $e");
+    rethrow;
   }
 }

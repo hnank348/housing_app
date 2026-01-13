@@ -119,7 +119,7 @@ class _EditProfileState extends State<EditProfile> {
                   colorIcon: Colors.white,
                   controller: adminFirstNameController,
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10),
                 TextFieldItem(
                   hinit: 'Last Name'.tr(),
                   color: const Color(0xff2D5C7A),
@@ -128,7 +128,7 @@ class _EditProfileState extends State<EditProfile> {
                   colorIcon: Colors.white,
                   controller: adminLastNameController,
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10),
                 TextFieldItem(
                   hinit: 'Birth Date'.tr(),
                   color: const Color(0xff2D5C7A),
@@ -156,8 +156,7 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                   colorIcon: Colors.white,
                 ),
-                const SizedBox(height: 10),
-                const SizedBox(height: 10),
+                SizedBox(height: 10),
                 TextFieldItem(
                   hinit: 'Id Image'.tr(),
                   color: const Color(0xff2D5C7A),
@@ -171,7 +170,7 @@ class _EditProfileState extends State<EditProfile> {
                   colorIcon: Colors.white,
                   controller: adminIdImageController,
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
                 Button(
                   text: 'Save'.tr(),
                   color: const Color(0xff2D5C7A),

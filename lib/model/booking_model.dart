@@ -48,7 +48,7 @@ class Booking {
       totalPrice: double.tryParse(json['total_price'].toString()) ?? 0.0,
       status: status,
       ownerApproval: json['owner_approval'] ?? 'pending',
-      apartment: apartmentData, // قد تكون null ولن ينهار المودل
+      apartment: apartmentData,
       createdAt: DateTime.parse(json['created_at'] ?? DateTime.now().toIso8601String()),
       updatedAt: DateTime.parse(json['updated_at'] ?? DateTime.now().toIso8601String()),
       canModify: canModify,

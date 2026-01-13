@@ -118,7 +118,7 @@ class _BuildApartmentCardState extends State<BuildApartmentCard> {
                       } else {
                         if (mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("عذراً، فشلت العملية. تأكد من تسجيل الدخول")),
+                             SnackBar(content: Text("Please login again".tr())),
                           );
                         }
                       }

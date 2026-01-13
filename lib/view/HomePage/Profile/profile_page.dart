@@ -40,7 +40,7 @@ class ProfilePage extends StatelessWidget {
                       : const AssetImage('assets/Image/logo sign up.jpg') as ImageProvider,
                 ),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
               SizedBox(
                 height: 50,
                 child: Text(
@@ -53,7 +53,7 @@ class ProfilePage extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
               Button(
                 text: 'Booking requests'.tr(),
                 color: const Color(0xff2D5C7A),
@@ -65,7 +65,7 @@ class ProfilePage extends StatelessWidget {
                   );
                 },
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
               Button(
                 text: 'Edit Profile'.tr(),
                 color: const Color(0xff2D5C7A),
@@ -77,7 +77,7 @@ class ProfilePage extends StatelessWidget {
                   );
                 },
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
               Button(
                 text: 'Settings'.tr(),
                 color: const Color(0xff2D5C7A),
@@ -89,7 +89,7 @@ class ProfilePage extends StatelessWidget {
                   );
                 },
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
               Button(
                 text: 'Log out'.tr(),
                 color: const Color(0xff2D5C7A),

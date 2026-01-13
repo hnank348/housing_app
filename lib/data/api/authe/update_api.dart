@@ -50,26 +50,65 @@ Future update(BuildContext context, String? firstN, String? lastN, String? birth
       if (context.mounted) {
         showDialog(
           context: context,
-          builder: (_) => AlertDialog(
-            title: const Text("Success").tr(),
-            content: const Text("Your profile has been updated successfully.").tr(),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.pop(context);
-                },
-                child: const Text("OK").tr(),
+          builder: (ctx) {
+            final isDark = Theme.of(ctx).brightness == Brightness.dark;
+            return AlertDialog(
+              backgroundColor: Theme.of(ctx).dialogBackgroundColor,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              title: Text(
+                "Success".tr(),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'Cairo',
+                  fontWeight: FontWeight.bold,
+                  color: isDark ? Colors.white : Colors.black,
+                ),
               ),
-            ],
-          ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.check_circle, color: Colors.green, size: 60),
+                  const SizedBox(height: 16),
+                  Text(
+                    "Your profile has been updated successfully.".tr(),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: 'Cairo',
+                      color: isDark ? Colors.grey[300] : Colors.grey[800],
+                    ),
+                  ),
+                ],
+              ),
+              actions: [
+                Center(
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.pop(ctx);
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      "OK".tr(),
+                      style: const TextStyle(
+                        fontFamily: 'Cairo',
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
         );
       }
     } else {
       print("Status Code: ${response.statusCode} - ${response.body}");
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Failed to update: ${response.statusCode}"))
+            SnackBar(
+              content: Text("${"Failed to update".tr()}: ${response.statusCode}"),
+              backgroundColor: Colors.redAccent,
+            )
         );
       }
     }
@@ -78,13 +117,15 @@ Future update(BuildContext context, String? firstN, String? lastN, String? birth
     if (context.mounted) {
       showDialog(
         context: context,
-        builder: (_) => AlertDialog(
-          title: const Text("Error"),
-          content: Text("An error occurred: $e"),
+        builder: (ctx) => AlertDialog(
+          backgroundColor: Theme.of(ctx).dialogBackgroundColor,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: Text("Error".tr(), style: const TextStyle(fontFamily: 'Cairo')),
+          content: Text("${"An error occurred".tr()}: $e", style: const TextStyle(fontFamily: 'Cairo')),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text("Close"),
+              onPressed: () => Navigator.pop(ctx),
+              child: Text("Close".tr(), style: const TextStyle(fontFamily: 'Cairo')),
             ),
           ],
         ),

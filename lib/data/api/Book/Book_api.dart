@@ -7,11 +7,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../constantApi/constantapi.dart';
 
 Future<void> bookApi(
-  BuildContext context,
-  String startDate,
-  String endDate,
-  int apartmentId,
-) async {
+    BuildContext context,
+    String startDate,
+    String endDate,
+    int apartmentId,
+    ) async {
   try {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('userToken') ?? '';
@@ -24,77 +24,116 @@ Future<void> bookApi(
         'end_date': endDate,
         'apartment_id': apartmentId.toString(),
       },
-      headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token'
+      },
     );
 
     print('Response Status: ${response.statusCode}');
     print('Response Body Book: ${response.body}');
 
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      var js = jsonDecode(response.body);
+    if (!context.mounted) return;
 
-      showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-          title: Text('Booking successfully').tr(),
-          content: Text(
-            'The booking request has been successfully submitted! Awaiting approval from the real state owner',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.pop(context);
-              },
-              child: Text('Ok').tr(),
-            ),
-          ],
-        ),
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      showDialog1(
+        context,
+        title: 'Booking successfully'.tr(),
+        content: 'The booking request has been successfully submitted! Awaiting approval from the real state owner'.tr(),
+        isSuccess: true,
       );
     } else if (response.statusCode == 409) {
-      showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-          title: Text('error').tr(),
-          content: Text('This apartment is already booked for the specified dates!').tr(),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('Ok').tr(),
-            ),
-          ],
-        ),
+      showDialog1(
+        context,
+        title: 'error'.tr(),
+        content: 'This apartment is already booked for the specified dates!'.tr(),
+        isSuccess: false,
       );
     } else {
-      showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-          title: Text('error').tr(),
-          content: Text('An error occurred during booking. Please try again.').tr(),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('Ok').tr(),
-            ),
-          ],
-        ),
+      showDialog1(
+        context,
+        title: 'error'.tr(),
+        content: 'An error occurred during booking. Please try again.'.tr(),
+        isSuccess: false,
       );
     }
   } catch (e) {
-    print('An error occurred: $e');
-
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text('error').tr(),
-        content: Text('The connection to the server failed. Check your internet connection.').tr(),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Ok').tr(),
-          ),
-        ],
-      ),
+    if (!context.mounted) return;
+    showDialog1(
+      context,
+      title: 'error'.tr(),
+      content: 'The connection to the server failed. Check your internet connection.'.tr(),
+      isSuccess: false,
     );
   }
+}
+
+void showDialog1(
+    BuildContext context, {
+      required String title,
+      required String content,
+      required bool isSuccess,
+    }) {
+  showDialog(
+    context: context,
+    builder: (ctx) {
+      final isDark = Theme.of(ctx).brightness == Brightness.dark;
+      return AlertDialog(
+        backgroundColor: Theme.of(ctx).dialogBackgroundColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text(
+          title,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontFamily: 'Cairo',
+            fontWeight: FontWeight.bold,
+            color: isDark ? Colors.white : Colors.black,
+          ),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              isSuccess ? Icons.check_circle_outline : Icons.error_outline,
+              color: isSuccess ? Colors.green : Colors.redAccent,
+              size: 60,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              content,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 15,
+                height: 1.5,
+                fontFamily: 'Cairo',
+                color: isDark ? Colors.grey[300] : Colors.grey[800],
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          Center(
+            child: TextButton(
+              onPressed: () {
+                if (isSuccess) {
+                  Navigator.pop(ctx);
+                  Navigator.pop(context);
+                } else {
+                  Navigator.pop(ctx);
+                }
+              },
+              child: Text(
+                'Ok'.tr(),
+                style: const TextStyle(
+                  fontFamily: 'Cairo',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    },
+  );
 }

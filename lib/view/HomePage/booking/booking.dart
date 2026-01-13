@@ -1,4 +1,3 @@
-// my_bookings_screen.dart
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -74,7 +73,7 @@ class _MyBookingsScreenState extends State<MyBookingsScreen>
           }
         }
       } else {
-        errorMessage = result['error'] ?? 'حدث خطأ غير متوقع';
+        errorMessage = result['error'] ?? 'error'.tr();
       }
     });
   }
@@ -178,7 +177,7 @@ class _MyBookingsScreenState extends State<MyBookingsScreen>
             const SizedBox(width: 12),
             Expanded(
               child: Text(
-                "هذا الحجز مرتبط ببيانات غير متوفرة حالياً (ربما تم حذف الشقة)",
+                "This booking is linked to unavailable data (the apartment may have been deleted)".tr(),
                 style: TextStyle(
                     fontFamily: 'Cairo', color: Colors.red.shade900),
               ),
@@ -192,7 +191,7 @@ class _MyBookingsScreenState extends State<MyBookingsScreen>
       decoration: BoxDecoration(
         color: Theme
             .of(context)
-            .cardColor, // يتغير تلقائياً بين الأبيض والأسود
+            .cardColor,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -214,7 +213,7 @@ class _MyBookingsScreenState extends State<MyBookingsScreen>
                   .of(context)
                   .brightness == Brightness.dark
                   ? primaryColor.withOpacity(0.2)
-                  : lightBlue, // خلفية الهيدر في الوضعين
+                  : lightBlue,
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(16),
                 topRight: Radius.circular(16),
@@ -249,7 +248,7 @@ class _MyBookingsScreenState extends State<MyBookingsScreen>
                           fontSize: 12,
                           color: Theme
                               .of(context)
-                              .hintColor, // لون رمادي مناسب للوضعين
+                              .hintColor,
                           fontFamily: 'Cairo',
                         ),
                       ),
@@ -375,10 +374,10 @@ class _MyBookingsScreenState extends State<MyBookingsScreen>
                       ),
                       _buildDetailItem(
                         icon: Icons.attach_money_outlined,
-                        value: '${double
+                        value: double
                             .tryParse(booking
                             .apartment?['price_per_day']?.toString() ?? '0')
-                            ?.toStringAsFixed(0) ?? '0'}',
+                            ?.toStringAsFixed(0) ?? '0',
                         label: 'day/SYP'.tr(),
                       ),
                     ],
@@ -890,7 +889,6 @@ class _MyBookingsScreenState extends State<MyBookingsScreen>
   Future<void> _showReviewDialog(Booking booking) async {
     double rating = 5.0;
 
-    // 1. تنظيف الـ Controller قبل فتح الديالوج لضمان عدم إرسال قيم قديمة أو null
     adminReviewTextController.clear();
 
     await showDialog(

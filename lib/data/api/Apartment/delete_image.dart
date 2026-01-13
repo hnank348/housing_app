@@ -24,7 +24,7 @@ Future<bool> deleteImage(int ApartmentId) async {
     print("Delete Image Status Code: ${response.statusCode}");
     print("Response Body: ${response.body}");
 
-    if (response.statusCode == 200 || response.statusCode == 204) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       return true;
     } else {
       return false;

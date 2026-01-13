@@ -9,21 +9,21 @@ class BookingRequests extends StatefulWidget {
   const BookingRequests({super.key});
 
   @override
-  State<BookingRequests> createState() => _BookingRequestsState();
+  State<BookingRequests> createState() => BookingRequestsState();
 }
 
-class _BookingRequestsState extends State<BookingRequests> {
-  late Future<BookingResponse> _requestsFuture;
+class BookingRequestsState extends State<BookingRequests> {
+  late Future<BookingResponse> requestsList;
 
   @override
   void initState() {
     super.initState();
-    _requestsFuture = getAllRequests();
+    requestsList = getAllRequests();
   }
 
-  void _onRefresh() {
+  void Refresh() {
     setState(() {
-      _requestsFuture = getAllRequests();
+      requestsList = getAllRequests();
     });
   }
 
@@ -49,26 +49,26 @@ class _BookingRequestsState extends State<BookingRequests> {
         ),
         actions: [
           IconButton(
-            onPressed: _onRefresh,
+            onPressed: Refresh,
             icon: const Icon(Icons.refresh, color: Colors.white),
           )
         ],
       ),
       body: FutureBuilder<BookingResponse>(
-        future: _requestsFuture,
+        future: requestsList,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator(color: primaryColor));
           }
 
           if (!snapshot.hasData || snapshot.data!.bookings.isEmpty) {
-            return _buildEmptyState(primaryColor, isDarkMode);
+            return Empty(primaryColor, isDarkMode);
           }
 
           final bookings = snapshot.data!.bookings;
 
           return RefreshIndicator(
-            onRefresh: () async => _onRefresh(),
+            onRefresh: () async => Refresh(),
             child: ListView.builder(
               itemCount: bookings.length,
               padding: const EdgeInsets.symmetric(vertical: 12),
@@ -90,7 +90,6 @@ class _BookingRequestsState extends State<BookingRequests> {
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                             fontFamily: 'Cairo'
-                          // اللون سيؤخذ تلقائياً من ثيم النصوص
                         ),
                       ),
                       subtitle: Padding(
@@ -125,7 +124,7 @@ class _BookingRequestsState extends State<BookingRequests> {
                           MaterialPageRoute(
                             builder: (context) => RequestDetails(booking: item),
                           ),
-                        ).then((_) => _onRefresh());
+                        ).then((_) => Refresh());
                       },
                     ),
                   ],
@@ -138,7 +137,7 @@ class _BookingRequestsState extends State<BookingRequests> {
     );
   }
 
-  Widget _buildEmptyState(Color color, bool isDarkMode) {
+  Widget Empty(Color color, bool isDarkMode) {
     return Center(
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -153,7 +152,7 @@ class _BookingRequestsState extends State<BookingRequests> {
               ),
               child: Icon(Icons.calendar_month_outlined, size: 80, color: color),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
             Text(
               'No requests found'.tr(),
               style: TextStyle(
@@ -163,17 +162,17 @@ class _BookingRequestsState extends State<BookingRequests> {
                   fontFamily: 'Cairo'
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
             Text(
-              'You don\'t have any booking requests yet'.tr(),
+              "You don't have any booking requests yet".tr(),
               style: TextStyle(
                   color: isDarkMode ? Colors.grey[400] : Colors.grey,
                   fontFamily: 'Cairo'
               ),
             ),
-            const SizedBox(height: 40),
+            SizedBox(height: 40),
             ElevatedButton.icon(
-              onPressed: _onRefresh,
+              onPressed: Refresh,
               icon: const Icon(Icons.refresh, color: Colors.white),
               label: Text('Refresh'.tr(), style: const TextStyle(color: Colors.white, fontFamily: 'Cairo')),
               style: ElevatedButton.styleFrom(

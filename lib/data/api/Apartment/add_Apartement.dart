@@ -6,7 +6,7 @@ import '../../../constantApi/constantapi.dart';
 import '../../../model/apartment_model.dart';
 
 class AddApartment {
-  Future<ApartmentModel> addApartmentData({
+  Future<ApartmentModel?> addApartmentData({
     required String title,
     required String description,
     required String governorate,
@@ -18,71 +18,68 @@ class AddApartment {
     required String pricePerDay,
     required File mainImage,
   }) async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('userToken') ?? '';
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('userToken') ?? '';
 
-    var request = http.MultipartRequest(
-      'POST',
-      Uri.parse(ConstantApi.apartment),
-    );
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse(ConstantApi.apartment),
+      );
 
-    request.fields.addAll({
-      'title': title,
-      'description': description,
-      'Governorate': governorate,
-      'city': city,
-      'address': address,
-      'rooms': rooms,
-      'bathrooms': bathrooms,
-      'area': area,
-      'price_per_day': pricePerDay,
-    });
+      request.fields.addAll({
+        'title': title,
+        'description': description,
+        'Governorate': governorate,
+        'city': city,
+        'address': address,
+        'rooms': rooms,
+        'bathrooms': bathrooms,
+        'area': area,
+        'price_per_day': pricePerDay,
+      });
 
-    request.files.add(
-      await http.MultipartFile.fromPath('image_url', mainImage.path),
-    );
-    request.headers.addAll({
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $token',
-    });
+      request.files.add(
+        await http.MultipartFile.fromPath('image_url', mainImage.path),
+      );
+      request.headers.addAll({
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
 
-    var streamedResponse = await request.send();
-    var response = await http.Response.fromStream(streamedResponse);
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
 
-    print("Step 1 Response: ${response.body}");
+      print("Step 1 Response: ${response.body}");
 
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      var responseData = json.decode(response.body);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        var responseData = json.decode(response.body);
+        var finalJson = responseData['data'] ?? responseData['apartment'] ?? responseData;
 
-      var finalJson =
-          responseData['data'] ?? responseData['apartment'] ?? responseData;
-
-      ApartmentModel apartment = ApartmentModel.fromJson(finalJson);
-
-      print("Success! Apartment ID is: ${apartment.id}");
-
-      return apartment;
-    } else {
-      throw Exception('فشل في إنشاء الشقة: ${response.body}');
+        return ApartmentModel.fromJson(finalJson);
+      } else {
+        print("Error: ${response.statusCode} - ${response.body}");
+        return null;
+      }
+    } catch (e) {
+      print("Exception during addApartmentData: $e");
+      return null;
     }
   }
 
-  Future<void> addAdditionalImages({
+  Future<bool> addAdditionalImages({
     required int apartmentId,
     required List<File> images,
   }) async {
     if (apartmentId <= 0) {
-      print(
-        "Error: Apartment ID is invalid ($apartmentId), cannot upload images!",
-      );
-      return;
+      print("Error: Apartment ID is invalid");
+      return false;
     }
 
     final prefs = await SharedPreferences.getInstance();
     final String token = prefs.getString('userToken') ?? '';
 
     var url = "${ConstantApi.add_Apatrment_Images}/$apartmentId";
-    print("Request URL: $url");
 
     try {
       var request = http.MultipartRequest('POST', Uri.parse(url));
@@ -101,22 +98,16 @@ class AddApartment {
       var streamedResponse = await request.send();
       var response = await http.Response.fromStream(streamedResponse);
 
-      print("Step Status: ${response.statusCode}");
-      print("Step Body: ${response.body}");
-
       if (response.statusCode == 200 || response.statusCode == 201) {
-        print(
-          "Success: Images stored successfully for apartment: $apartmentId",
-        );
+        print("Success: Images stored");
+        return true;
       } else {
-        print(
-          "Failed to upload images. Server responded with: ${response.body}",
-        );
+        print("Failed to upload images: ${response.body}");
+        return false;
       }
     } catch (e) {
       print("Exception during image upload: $e");
+      return false;
     }
   }
 }
-
-

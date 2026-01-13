@@ -1,19 +1,20 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:housing_app/constantApi/constantapi.dart';
+import 'package:housing_app/view/HomePage/search_icon.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:housing_app/model/apartment_model.dart';
 import 'package:housing_app/data/api/Apartment/get_all_apartment_services.dart';
-import 'package:housing_app/itemWidget/BottomNavBar.dart';
-import 'package:housing_app/view/HomePage/Notification.dart';
-import 'package:housing_app/view/HomePage/Apartment/apartment_list.dart';
-import 'package:housing_app/view/HomePage/search_icon.dart';
 import 'package:housing_app/main.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../itemWidget/BottomNavBar.dart';
+import 'Apartment/apartment_list.dart';
+import 'Notification.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -27,8 +28,8 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isLoading = true;
   String? errorMessage;
 
-  Timer? _notificationTimer;
-  int _lastNotificationId = 0;
+  Timer? notificationTimer;
+  int lastNotificationId = 0;
 
   @override
   void initState() {
@@ -43,13 +44,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _startLocalNotificationPolling() {
-    _notificationTimer = Timer.periodic(const Duration(seconds: 20), (timer) {
+    notificationTimer = Timer.periodic(const Duration(seconds: 20), (timer) {
       _checkNewNotifications();
     });
   }
 
   Future<void> _checkNewNotifications() async {
-    final url = "${ConstantApi.notifications}";
+    final url = ConstantApi.notifications;
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('userToken') ?? '';
 
@@ -68,11 +69,9 @@ class _HomeScreenState extends State<HomeScreen> {
           var latestNotif = data.first;
           int currentId = latestNotif['id'];
 
-          if (_lastNotificationId == 0 || currentId > _lastNotificationId) {
-
-            _lastNotificationId = currentId;
-
-            _showPopup(latestNotif['title'], latestNotif['message']);
+          if (lastNotificationId == 0 || currentId > lastNotificationId) {
+            lastNotificationId = currentId;
+            showPopup(latestNotif['title'], latestNotif['message']);
           }
         }
       }
@@ -81,13 +80,11 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void _showPopup(String? title, String? body) {
-    print("محاولة إظهار الإشعار على الشاشة الآن...");
-
+  void showPopup(String? title, String? body) {
     flutterLocalNotificationsPlugin.show(
       DateTime.now().millisecond,
-      title ?? "تنبيه جديد",
-      body ?? "لديك رسالة جديدة من النظام",
+      title ?? "New Notification".tr(),
+      body ?? "You have a new system message".tr(),
       const NotificationDetails(
         android: AndroidNotificationDetails(
           'high_importance_channel',
@@ -104,13 +101,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
-    _notificationTimer?.cancel();
+    notificationTimer?.cancel();
     super.dispose();
   }
 
   Future<void> loadInitialData() async {
     try {
-      setState(() => isLoading = true);
+      setState(() {
+        isLoading = true;
+        errorMessage = null;
+      });
       List<ApartmentModel> data = await AllApartmentService().getAllApartment();
       setState(() {
         displayedApartments = data;
@@ -159,20 +159,22 @@ class _HomeScreenState extends State<HomeScreen> {
         await _showExitDialog();
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
         bottomNavigationBar: const BottomNavBar(),
         appBar: AppBar(
           backgroundColor: const Color(0xff2D5C7A),
           elevation: 0,
-          title: const Text(
+          title: Text(
             'Real state for rent',
-            style: TextStyle(color: Colors.white, fontSize: 20),
+            style: const TextStyle(color: Colors.white, fontSize: 18),
           ).tr(),
+          centerTitle: true,
           actions: [
             IconButton(
               icon: const Icon(Icons.notifications, color: Colors.white),
               onPressed: () => Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Esharscreen()),
+                MaterialPageRoute(builder: (context) => const NotificationPage()),
               ),
             ),
             IconButton(
@@ -184,18 +186,31 @@ class _HomeScreenState extends State<HomeScreen> {
         body: isLoading
             ? const Center(child: CircularProgressIndicator())
             : errorMessage != null
-            ? Center(child: Text('Error: $errorMessage'))
+            ? Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Error: $errorMessage'),
+              ElevatedButton(
+                onPressed: loadInitialData,
+                child: Text("Retry".tr()),
+              )
+            ],
+          ),
+        )
             : Column(
           children: [
             SearchIcon(onSearchComplete: updateApartmentsList),
+
             Expanded(
               child: displayedApartments.isEmpty
-                  ? Center(child: const Text('No results found').tr())
+                  ? Center(child: Text('No results found'.tr()))
                   : ListView.builder(
+                padding: const EdgeInsets.only(bottom: 20),
                 itemCount: displayedApartments.length,
                 itemBuilder: (context, index) {
                   return Padding(
-                    padding: const EdgeInsets.all(10),
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     child: BuildApartmentCard(
                       apartmentModel: displayedApartments[index],
                     ),

@@ -8,32 +8,55 @@ class BottomNavButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color activeColor = Theme.of(context).brightness == Brightness.light
-        ? const Color(0xff2D5C7A)
-        : Colors.grey;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final Color activeColor = isDark
+        ? const Color(0xff4690bd)
+        : const Color(0xff2D5C7A);
+
+    final Color inactiveColor = isDark
+        ? Colors.grey[500]!
+        : Colors.grey[600]!;
 
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, item.id);
+        if (!item.isActive) {
+          Navigator.pushNamed(context, item.id);
+        }
       },
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            (item.icon as Icon).icon,
-            color: item.isActive ? activeColor : Colors.grey[500],
-            size: 28,
-          ),
-          const SizedBox(height: 5),
-          Text(
-            item.label,
-            style: TextStyle(
-              fontSize: 12,
-              color: item.isActive ? activeColor : Colors.grey[600],
-              fontWeight: item.isActive ? FontWeight.bold : FontWeight.normal,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        color: Colors.transparent,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              (item.icon).icon,
+              color: item.isActive ? activeColor : inactiveColor,
+              size: 26,
             ),
-          ),
-        ],
+            const SizedBox(height: 4),
+            Text(
+              item.label,
+              style: TextStyle(
+                fontSize: 12,
+                color: item.isActive ? activeColor : inactiveColor,
+                fontWeight: item.isActive ? FontWeight.bold : FontWeight.w500,
+              ),
+            ),
+            if (item.isActive)
+              Container(
+                margin: const EdgeInsets.only(top: 2),
+                height: 2,
+                width: 15,
+                decoration: BoxDecoration(
+                  color: activeColor,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

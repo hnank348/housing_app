@@ -8,17 +8,24 @@ class WelcomPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-        
           children: [
-            SizedBox(height: 100),
+            const SizedBox(height: 100),
             Stack(
               alignment: Alignment.bottomCenter,
-              children:[Image(image:AssetImage('assets/Image/logo.jpg')),]
+              children: [
+                Image(
+                  image: AssetImage(
+                    isDark ? 'assets/Image/logo 2.jpg' : 'assets/Image/logo.jpg',
+                  ),
+                ),
+              ],
             ),
             Text(
               'Housing App'.tr(),
@@ -26,25 +33,27 @@ class WelcomPage extends StatelessWidget {
                 fontSize: 50,
                 fontWeight: FontWeight.bold,
                 fontFamily: 'Pacifico',
-                color: Color(0xff073D5F),
+                color: isDark ? const Color(0xff4690bd) : const Color(0xff073D5F),
               ),
             ),
-            SizedBox(height: 50),
+            const SizedBox(height: 50),
             Container(
               width: 320,
               height: 50,
-        
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:  Color(0xff073D5F),
-                  maximumSize: Size(320, 50),
+                  backgroundColor: isDark ? const Color(0xff4690bd) : const Color(0xff073D5F),
+                  maximumSize: const Size(320, 50),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                 ),
                 onPressed: () {
-                   Navigator.push(context, MaterialPageRoute(builder: (BuildContext context){return SignupScreen();}));
+                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
+                    return SignupScreen();
+                  }));
                 },
                 child: Text(
                   'SIGN UP'.tr(),
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -52,25 +61,25 @@ class WelcomPage extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 50),
-        
+            const SizedBox(height: 50),
             Container(
               width: 320,
               height: 50,
-        
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xff073D5F),
-                  maximumSize: Size(320, 50),
+                  backgroundColor: isDark ? const Color(0xff4690bd) : const Color(0xff073D5F),
+                  maximumSize: const Size(320, 50),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                 ),
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context){return LoginScreen();}));
-        
+                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
+                    return LoginScreen();
+                  }));
                 },
                 child: Text(
                   'LOG IN'.tr(),
-                  style: TextStyle(
-                    color:  Colors.white,
+                  style: const TextStyle(
+                    color: Colors.white,
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),

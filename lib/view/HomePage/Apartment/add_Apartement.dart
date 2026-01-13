@@ -66,8 +66,8 @@ class _AddApartmentPageState extends State<AddApartmentPage> {
   Future<void> handlePublish() async {
     if (!formKey.currentState!.validate() || mainImage == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Please fill in the data and select the Main photo')),
+        SnackBar(
+            content: Text('Please fill in the data and select the Main photo'.tr())),
       );
       return;
     }
@@ -87,19 +87,23 @@ class _AddApartmentPageState extends State<AddApartmentPage> {
         mainImage: mainImage!,
       );
 
-      if (additionalImages.isNotEmpty && apartment.id != 0) {
+      if (additionalImages.isNotEmpty && apartment!.id != 0) {
         await AddApartment().addAdditionalImages(
           apartmentId: apartment.id,
           images: additionalImages,
         );
       }
 
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Successfully published')));
-      Navigator.pop(context);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Successfully published'.tr())));
+        Navigator.pop(context);
+      }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('error: $e')));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('error: $e'.tr())));
+      }
     } finally {
       if (mounted) setState(() => isLoading = false);
     }
@@ -107,12 +111,15 @@ class _AddApartmentPageState extends State<AddApartmentPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: const Text('Add a new real state',
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold,))
             .tr(),
-        backgroundColor: Color(0xff2D5C7A),
+        backgroundColor: isDark ? Colors.black : const Color(0xff2D5C7A),
         elevation: 0,
         centerTitle: true,
         leading: const BackButton(color: Colors.white),
@@ -126,22 +133,22 @@ class _AddApartmentPageState extends State<AddApartmentPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Title('Maim photo'.tr()),
+              Title('Maim photo'.tr(), isDark),
               Images(
                 mainImage: mainImage,
                 onTap: pickMainImage,
                 isMulti: false,
               ),
-               SizedBox(height: 25),
-              Title('Additional photos (optional)'.tr()),
+              const SizedBox(height: 25),
+              Title('Additional photos (optional)'.tr(), isDark),
               Images(
                 multiImages: additionalImages,
                 onTap: pickAdditionalImages,
                 onRemove: (index) => setState(() => additionalImages.removeAt(index)),
                 isMulti: true,
               ),
-               SizedBox(height: 25),
-              Title('Real state details'.tr()),
+              const SizedBox(height: 25),
+              Title('Real state details'.tr(), isDark),
               CardItem([
                 TextFieldWidget(adminTitleController, 'Real state title'.tr(),
                     Icons.text_fields),
@@ -149,13 +156,13 @@ class _AddApartmentPageState extends State<AddApartmentPage> {
                     descController, 'Description'.tr(), Icons.description,
                     maxLines: 3),
               ]),
-               SizedBox(height: 20),
-              Title('Geographic location'.tr()),
+              const SizedBox(height: 20),
+              Title('Geographic location'.tr(), isDark),
               CardItem([
                 Row(children: [
                   Expanded(child: TextFieldWidget(
                       adminGovController, 'Governorate'.tr(), Icons.map)),
-                   SizedBox(width: 12),
+                  const SizedBox(width: 12),
                   Expanded(child: TextFieldWidget(
                       adminCityController, 'City'.tr(), Icons.location_city)),
                 ]),
@@ -163,14 +170,14 @@ class _AddApartmentPageState extends State<AddApartmentPage> {
                     adminAddressController, 'The address in detail'.tr(),
                     Icons.location_on),
               ]),
-               SizedBox(height: 20),
-              Title('Area and costs'.tr()),
+              const SizedBox(height: 20),
+              Title('Area and costs'.tr(), isDark),
               CardItem([
                 Row(children: [
                   Expanded(child: TextFieldWidget(
                       adminAreaController, 'Area m²'.tr(), Icons.square_foot,
                       isNum: true)),
-                   SizedBox(width: 12),
+                  const SizedBox(width: 12),
                   Expanded(child: TextFieldWidget(
                       adminPriceController, 'Price / month'.tr(),
                       Icons.attach_money, isNum: true)),
@@ -179,16 +186,16 @@ class _AddApartmentPageState extends State<AddApartmentPage> {
                   Expanded(child: TextFieldWidget(
                       adminRoomsController, 'Rooms'.tr(), Icons.bed,
                       isNum: true)),
-                   SizedBox(width: 12),
+                  const SizedBox(width: 12),
                   Expanded(child: TextFieldWidget(
                       adminBathroomsController, 'Bathrooms'.tr(),
                       Icons.bathroom, isNum: true)),
                 ]),
               ]),
-               SizedBox(height: 40),
-              Button(text: 'Real state to publish'.tr(), color: Color(0xff2D5C7A),
+              const SizedBox(height: 40),
+              Button(text: 'Real state to publish'.tr(), color: const Color(0xff2D5C7A),
                   colorText: Colors.white, onPressed:handlePublish),
-               SizedBox(height: 30),
+              const SizedBox(height: 30),
             ],
           ),
         ),
@@ -196,12 +203,14 @@ class _AddApartmentPageState extends State<AddApartmentPage> {
     );
   }
 
-  Widget Title(String title) =>
+  Widget Title(String title, bool isDark) =>
       Padding(
         padding: const EdgeInsets.only(bottom: 10, left: 5),
         child: Text(title,
-            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+            style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                color: isDark ? Colors.white : Colors.black
+            )),
       );
-
-
 }

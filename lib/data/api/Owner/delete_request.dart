@@ -33,7 +33,7 @@ Future<String> DeleteRequests(int bookingId, int userId) async {
         message: "Sorry, your booking request has been rejected.".tr(),
       );
 
-      return data['message'] ?? "Deleted successfully";
+      return data['message'] ?? "Deleted successfully".tr();
     } else {
       return data['message'] ?? "Failed to delete: ${response.statusCode}";
     }
